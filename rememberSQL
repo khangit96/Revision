@@ -1,0 +1,62 @@
+-----------------------------------------------------------------------------------------------
+**
+-SQL là một ngôn ngữ dùng cho các hệ quản trị cơ sở dữ liệu
+-Hệ quản trị cơ sở dữ liệu là một phần mềm,về cơ bản là sử dụng ngôn ngữ SQL nhưng mỗi hệ quản trị đều có những điểm khác nhau
+Các hệ quản  trị cơ sở dữ liệu phổ biến:SQL Oracel,SQL Server,DB2
+----------------------------------------------------------------------------------------------------------------
+***Kiểu dữ liệu trong SQL
+
+DATA TYPE     	            DESCRIPTION	                                              EXAMPLE
+int	                        integer data	                                          -3, 1, 12, 57
+char(n)	           fixed length string where n is the maximum length	               'hello', 'goodbye'
+varchar(n)	       variable length string where n is the maximum length	               'hello', 'goodbye'
+datetime	       stores date and time	                                               Jan 1, 2010 3:00PM
+date	           stores date only	                                                  Jan 1, 2010
+time	           stores time only	                                                  3:00PM
+money	           stores monetary data	                                              123.45VND
+
+
+-----------------------------------------------------------------------------------------------------------
+**create table:
+CREATE DATABASE db1;//tao database
+----------------------------------------------------------------------
+CREATE DATABASE IF NOT EXISTS db1;// kiem tra neu database tôn tai thì không tao
+--------------------------------------------------------------------------------
+CREATE TABLE mytable ( id INT PRIMARY KEY, name VARCHAR(20) );
+---------------------------------------------------------------------
+INSERT INTO mytable VALUES ( 1, 'Will' );
+------------------------------------------------------------------------
+SELECT id, name FROM mytable WHERE id = 1;
+------------------------------------------------------------------------
+UPDATE mytable SET name = 'Willy' WHERE id = 1;
+---------------------------------------------------------------------------
+SELECT FirstName, LastName FROM Employees WHERE FirstName = 'John';
+------------------------------------------------------------------------------
+SELECT FirstName, LastName FROM Employees ORDERBY FirstName //sắp xếp theo FirstName
+------------------------------------------------------------------------------
+SELECT FirstName, LastName FROM Employees ORDERBY FirstName DESC //sắp xếp giảm dần
+
+
+
+**Thuat ngu
+-Database system Enviroment //moi truong thiet lap he thong co so du lieu
+-Database Management System(DBMS)//he quan tri co so du lieu(SQL Server,SQL Oracel)
+-Relational Database Management System //moi quan he giua cac bang trong co so du lieu
+-Object-Oriented Database Management System // he thong quan tri co so du lieu theo cac thuc the
+-Primary key(n)//khoa chinh
+-Entity/Relationship diagram(n)
+-Centralized Database System 
+-Distributed Database System
+-internal level 
+-external level
+-conceptual level
+-A temporal database
+-A logic-based database
+------------------------------------------------------------
+-Data processing
+-Data coding
+-Data collection
+-Data entry
+-Data sorting
+-Data tabulation
+-Data validation

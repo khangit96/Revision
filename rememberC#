@@ -1,0 +1,796 @@
+ --------------------------------------------------------------------------------------------------------------------------------
+ ***ADO.NET:là một phương thức giúp cho chúng ta kết nối đến cơ sở dữ liệu như SQL Server,Microsoft Access dùng cho các ứng dụng 
+ viết bằng C#:web app,winform app
+-------------------------------------------------------------------------------------------------------------------------------
+** http://www.connectionstrings.com/about/ //website help connect C# Application to Database
+ -------------------------------------------------------------------------------------------------------------------------------
+ ***Exit app:
+	Application.Exit();
+ --------------------------------------------------------------------------------------------------------------------------
+   String val = "khang";
+   lb.Text = val;//set Text cho label
+    MessageBox.Show("HI"); //show thông báo
+--------------------------------------------------------------------------------------------------------------------------
+**Phương thức tĩnh static:là phương thức mà có thể gọi trực tiếp không cần phải khởi tạo đối tượng.
+//example
+class Test{
+	private static String val="Khang";//nếu muốn dùng phương thức tĩnh thì thuộc tính cần phải để static
+	public static String show(){ //phương thức tĩnh với static
+		return val;
+	}
+}
+//class main
+Test.show()//gọi trực tiếp bằng tên lớp
+--------------------------------------------------------------------------------------------------------------------------
+**MẢNG
+            int[] array = new int[5];// khai bao mang
+
+            // nhap mang
+
+           for (int i = 0; i < 5; i++)
+           {
+
+               array[i] = int.Parse(Console.ReadLine());
+              
+           }
+
+            // xuat mang
+
+           for (int i = 0; i < 5; i++)
+           {
+
+               Console.WriteLine(array[i]);
+               Console.WriteLine("\t");
+           }
+-------------------------------------------------------------------------------------------------------
+***string
+ string chuoi;// khai báo chuỗi
+            chuoi = Console.ReadLine(); // nhập chuỗi
+            Console.WriteLine(chuoi);// xuất chuỗi
+            Console.WriteLine("\n");// xuống dòng
+---------------------------------------------------------------------------------------------------
+***List:
+//khởi tạo
+   List<int> mang = new List<int>();
+ //add
+     mang.Add(5);
+     mang.Add(6);
+     mang.Add(4);
+    mang.Add(5);
+//duyệt
+	 foreach (var item in mang)
+            {
+
+                label1.Text = Convert.ToString(item);
+                Thread.Sleep(1000);
+                Application.DoEvents();
+            }
+---------------------------------------------------------------------------------------------------
+ string s;
+            s = Console.ReadLine();
+            string s1 = "***";
+           s += "|";
+           s += "duy khang";
+           s += s1;
+            Console.Write(s);
+--------------------------------------------------------------------------------------------------------
+            String val_1 = tb1.Text;
+            String val_2 = tb2.Text;
+            int int_val_1 = Convert.ToInt16(val_1);
+            int int_val_2 = Convert.ToInt16(val_2);
+            Process p = new Process();
+            double result = p.process(int_val_1,int_val_2);
+            MessageBox.Show(Convert.ToString(result));
+--------------------------------------------------------------------------------------------------------
+//class SINHVIEN
+ class SINHVIEN
+    {
+       string [] ten;
+        int soluong;
+        double[] diemtoan;
+        double[] diemly;
+        double[] diemhoa;
+        double[] dtrungbinh;
+        public void nhap()
+        {
+
+            Console.Write("Nhap vao so luong sinh vien: ");
+            soluong = int.Parse(Console.ReadLine());
+            diemtoan = new double[soluong];
+            diemly = new double[soluong];
+            diemhoa = new double[soluong];
+
+
+            for(int i=0;i<soluong;i++)
+            {
+                Console.WriteLine("**Sinh vien thu {0} ", i + 1);
+                Console.Write("-Ten sinh vien:");
+                ten[i] = Console.ReadLine();
+                Console.Write("-Diem toan:");
+                diemtoan[i] = double.Parse(Console.ReadLine());
+                Console.Write("-Diem ly:");
+                diemly[i] = double.Parse(Console.ReadLine());
+                Console.Write("-Diem hoa:");
+                diemhoa[i] = double.Parse(Console.ReadLine());
+                dtrungbinh[i] = (double)((diemtoan[i] + diemly[i] + diemhoa[i]) / 3);
+                Console.WriteLine("Diem trung binh:{0}", dtrungbinh[i]);
+
+            }
+
+        }
+        public void KiemTra()
+        {
+            for(int i=0;i<soluong;i++)
+            {
+
+               
+
+                    Console.WriteLine(ten[i]);
+
+                
+
+            }
+
+
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            SINHVIEN sv = new SINHVIEN();
+            sv.nhap();
+            sv.KiemTra();
+        }
+    }
+}
+----------------------------------------------------------------------------------------------------
+   // base class
+ class PerSon              
+    {
+        protected string Ma, HoTen;
+		//hàm khở tạo mặc định
+        public PerSon()
+        {
+            Ma = "0";
+            HoTen = "NULL";
+        }
+	   //hàm khởi tạo có truyền tham số
+        public PerSon(string Ma, string HoTen)
+        {
+            this.Ma = Ma;
+            this.HoTen = HoTen;
+        }
+        public void Nhap()
+        {
+            Console.WriteLine("Nhap Ma So:");
+            Ma = Console.ReadLine();
+            Console.WriteLine("Nhap Ho Ten:");
+            HoTen = Console.ReadLine();
+        }
+        public void Xuat()
+        {
+            Console.WriteLine("Ma So: {0}", this.Ma);
+            Console.WriteLine("Ho Ten: {0}", this.HoTen);
+        }
+ 
+// class kế thừa
+  class GiangVien : PerSon
+    {
+        private ushort SoBaiBao;
+		//hàm khởi tạo mặc định kế thừa từ base class
+        public GiangVien()
+            : base()
+        {
+            SoBaiBao = 0;
+        }
+		//hàm khởi tạo có tham số kế thừa từ base class
+        public GiangVien(string Ma, string HoTen, ushort SoBaiBao)
+            : base(Ma, HoTen)
+        {
+            this.SoBaiBao = SoBaiBao;
+        }
+}
+//
+   public void NhapGiangVien()
+        {	//kế thừ từ hàm nhập của base class
+            base.Nhap();
+            do
+            {
+                Console.WriteLine("Nhap so bai bao:");
+                SoBaiBao = ushort.Parse(Console.ReadLine());
+                if (SoBaiBao < 0)
+                    Console.WriteLine("So bai bao phai > 0. Nhap lai!\n");
+            } while (SoBaiBao < 0);
+        }
+}
+
+-------------------------------------------------------------------------------------------------------------------------
+***Hàm Trim():là hàm dùng để loại bỏ khoảng trắng
+***Trim().length:dùng để lấy độ dài chuổi
+//example
+ String text = tb.Text;
+ int le = text.Trim().Length;
+ MessageBox.Show(Convert.ToString(le));
+-------------------------------------------------------------------------------------------------------------------
+**Groupbox:dùng để nhóm các đối tượng lại thành 1 vùng
+
+-------------------------------------------------------------------------------------------------------
+**Enable Textbox:cho phép hoặc không cho phép nhập dữ liệu
+//example
+if (tbDiem.Text == ""){
+	tbDiemtrungbinh.Enabled = false;//ko cho phép nhập dữ liệu vào textbox
+}
+ else{
+	  tbDiemtrungbinh.Enabled = true;//cho phép nhập dữ liệu vào textbox
+ }             
+            
+ 
+
+-------------------------------------------------------------------------------------------------
+**Cơ chế get/set:
+private double chieudai;
+private double chieurong;
+public double CHIEUDAI{
+	get{
+		return chieudai;
+	}
+	set{
+		chieudai=value;
+	}
+	
+}
+public double CHIEURONG{
+	get{
+		return chieurong;
+	}
+	set{
+		chieurong=value;
+	}
+}
+//example
+/*Class Student.cs*/
+namespace GetSet
+{
+    class Student
+    {
+        private String name;
+        private Int16 age;
+        public String NAME{
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+            }
+    }
+    }
+}
+//Form.cs
+namespace GetSet
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            Student s = new Student();
+            s.NAME = "khang";
+            String name = s.NAME;
+            MessageBox.Show(name);
+        }
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+***Polymorphim(đa hình):Virtual/override:tương tự như phương thức ảo trong c++ nhưng để dùng ở lớp con thì lớp con cần phải có từ khóa  override ở phương thức để ghi đè phương thức của lớp cha
+//example
+/*Class Person.cs*/
+namespace Virtual_Override
+{
+    class Person
+    { 
+        public String name;
+        public Int16 age;
+        public virtual String show()
+        {
+             String text="I am person";
+             return text;
+        }
+    }
+}
+
+/*Class Student.cs*/
+namespace Virtual_Override
+{
+    class Student:Person
+    {
+        public override String show()
+        {
+            String text = "I am student";
+            return text;
+         
+        }
+    }
+}
+
+/*Form.cs*/
+namespace Virtual_Override
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            Person p = new Person();
+            //MessageBox.Show(p.show());
+            Person s = new Student();
+            MessageBox.Show(s.show());
+        }
+    }
+}
+**Note:Khi gán đối tương p=s thì p sẽ giữ địa chỉ của s.Nếu gọi phương thức override của p thì kết quả sẽ là phương thức override của s
+//example
+			Person p = new Person();
+          //  MessageBox.Show(p.show());
+           Student s = new Student();
+           // MessageBox.Show(s.show()); 
+           p = s;
+           MessageBox.Show(p.show());//kết quả là s.show()
+--------------------------------------------------------------------------------------------------------------------------------------------
+**abstract:thường là lớp không rõ,chung chung như lớp động vật,lớp hình..
+//Abstract là gì:
++Abstract class hay còn được gọi là lớp trừu tượng.
++Abstract class được xem như một class cha cho tất cả các class con có cùng bản chất, và các lớp con(lớp dẫn xuất) sẽ chỉ kế thừa từ một lớp trừu trượng.
++Lớp trừu tượng này không cho phép khởi tạo các tham số, chỉ được phép khai báo hay còn gọi là abstract không có cài đặt bên trong.
++Trong các lớp Abstract không cho phép khơi tạo đối tượng(instance) của lớp ấy, có nghĩa không cho phép khởi tạo giá trị.
++Abstract được xem như một class không đây đủ, và khi ta sử dụng nó thì ta khai báo hoặc khai báo lại cho nó.
+
+//Mục đích sử dụng abstract:
+Abstract class như một lớp cha, mà khi các class con kế thừa sẽ phải phụ thuộc đầy đủ các phương thức đã được khai báo trong class cha abstract.
+Các class kế thừa sẽ thực thi các phương thức giống nhau được khai báo từ class cha, ngoài ra ở các class kế thừa có thể khai báo thêm các phương thức khác mà class con đó muốn.
+Một lớp adstract có một hoặc nhiều abstract method bên trong hoặc khai báo lại chính nó.
+Các phương thức của lớp abstract class được thực thi và đem vào sử dụng thì ta khai báo thêm từ khóa override trước nó(Xem ví dụ dưới để rõ).
+
+//example
+
+public abstract class Hinh
+{
+    public abstract float GetDienTich();//khai báo 1 abstract method
+}
+
+public class HinhTron:Hinh // lớp con HinhTron kế thừa từ lớp cha Hinh
+{
+    private float fltBanKinh, fltPI;//có thể khai báo thêm biến trong các lớp con kế thừa
+
+    public override float GetDienTich() // xử lý hàm từ lớp cha đã khai báo
+    {
+        return (fltPI * (fltBanKinh* 2));
+    }
+}
+
+public class HinhChuNhat:Hinh
+{
+    private float fltDai, fltRong;
+
+    public override float GetDienTich(Hinh other)
+    {
+        return fltDai * fltRong;
+    }
+}
+class Program
+{
+   static void Main(string[] args)
+   {
+         HinhTron ojhinhtron=new HinhTron();
+         ojhinhtron.fltBanKinh=30;
+         ojhinhtron.fltPI=3.14;
+         float fltdientich=ojhinhtron.GetDienTich();
+         System.Console.WriteLine("Diện tích hình tròn là ': {0}",fltdientich);
+         ......
+         ......
+    }
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------
+//try catch giúp cho chương trình không crash app
+try{
+	//Đoạn mã nghi nghờ sẽ xảy ra lỗi
+}
+catch{
+	//xảy ra nếu có lỗi
+}
+--------------------------------------------------------------------------------------------------------------
+ tb2.Focus();//đưa  con trỏ về ô textbox
+-------------------------------------------------------------------------------------------------------------
+***Checkbox:
+            String val = "";
+            if (cbToan.Checked)//kiểm tra xem có check hay ko
+            {
+                val += cbToan.Text;
+            }
+            if (cbHoa.Checked)
+            {
+                val += cbHoa.Text;//kiểm tra xem có check hay koh
+            }
+------------------------------------------------------------------------------------------------------------
+**ComboBox:
+ cbox.Items.Add("Pro"); //add item ComboBox
+ comboBox1.Items.Remove("Xe đạp");//remove vị trí bằng giá trị text
+ string var;
+ var = cbox.Text; //lấy giá trị item đã chọn
+ MessageBox.Show(var);
+ 
+-------------------------------------------------------------------------------------------------------------
+**CONNECT DATABASE SQL SERVER TO C# APPLICATION
+
+//Cài SQL MANAGEMENT STUDIO 2012
+-Cài SQL SERVER 2012 trước
+-Cài SQL SERVER MANAGEMENT STUDIO 2012
+
+//trước khi kết nối phải add tạo một Data Connection
+-Nhấp chuột phải vào Data Connection chọn Add New Connection
+-Chọn Microsoft SQL Server:chọn server name là server ở trong SQL SERVER MANAGEMENT STUDIO
+-Chọn Database name ở Tap Connect to a database
+-Chọn Test Connection và sau cùng là chọn Ok
+------------------------------------------------------------------------------------------------------------------
+**CRUD MÔ HÌNH MỘT LỚP
+//class
+//Thêm namespace vào:
+using System.Data.SqlClient;
+namespace DemoDatabase
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        SqlConnection con = new SqlConnection(@"Data Source=S1YW9L9XL3XSCPM;Initial Catalog=Demo;Integrated Security=True");
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // TODO: This line of code loads data into the 'demoDataSet.Student' table. You can move, or remove it, as needed.
+            this.studentTableAdapter.Fill(this.demoDataSet.Student);
+            ConnectDatabase();
+        }
+        //hàm kết nối
+        private void ConnectDatabase()
+        {
+            //Mở kết nối
+            con.Open();
+            //Tạo chuổi kết nối
+            string sql = "SELECT * FROM Student";// lấy hết dữ liệu trong bảng Student
+            SqlCommand com = new SqlCommand(sql, con);//bắt đầu truy vấn
+            com.CommandType = CommandType.Text;
+            SqlDataAdapter da = new SqlDataAdapter(com);//vận chuyển dữ liệu về
+            DataTable dt = new DataTable();
+            //tạo một kho ảo để lưu trữ dữ liệu 
+            da.Fill(dt);//đổ dữ liệu vào kho
+
+            //đóng kết nối
+            con.Close();
+            //đổ dữ liệu vào DataGirdView
+            dataGridView1.DataSource = dt;
+            
+        }
+		
+		/*Insert database*/
+		 private void Insert()
+        {
+            string name = "Hùng";
+            string address = "Phú Yên";
+            con.Open();
+            string insert = "insert into Student(name,address) values('"+name+"','"+address+"')";
+            SqlCommand com= new SqlCommand(insert,con);
+            com.ExecuteNonQuery();
+          
+            con.Close();
+
+        }
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                dataGridView1.CurrentRow.Selected = true;
+            }
+            catch
+            {
+               
+            }
+        }
+    }
+}
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+  Math.Sqrt(d)//tính căn bậc 2
+  
+ ------------------------------------------------------------------------------------------------------------------
+ **OpenFileDialog với PictureBox:tạo một hộp thoại để người dùng chọn file ảnh sau đó sẽ hiện thị trong PictureBox
+            OpenFileDialog opd =new OpenFileDialog(); //Khởi tạo đối tượng dialog
+            opd.Title = "Load file hinh";//Tiêu đề
+            opd.InitialDirectory = @"E:\";//khởi tạo ổ địa mặc định khi mở Dialog
+            opd.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif;...";//lọc định dạng file
+            if (opd.ShowDialog() == DialogResult.OK)//kiểm tra nếu người dùng nhấn nút OK
+            {
+                pictureBox1.Image = Image.FromFile(opd.FileName);//Gán ảnh vào file đã mở dựa vào FileName
+            }
+ 
+ 
+ ---------------------------------------------------------------------------------------------------
+ **CHƯƠNG TRÌNH CHẠY CHỮ:SỬ DỤNG TIMER:
+ namespace Chuongtrinhchaychudongian
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnBatDau_Click(object sender, EventArgs e)
+        {
+            lbChuChay.Text = txtNhapChu.Text;//khi người dùng nhấn nút bắt đầu thì sẽ gán label bằng nội dung trong textbox
+			timer1.Start();//bắt đầu timer khi click(phải bật Enable=false trước.nếu ko bật thì khi form load timer sẽ tự động start )
+        }
+        private int start = 10; //khởi tạo tốc độ chạy
+        private void timer1_Tick(object sender, EventArgs e)//time tick sẽ thực hiện hành động lập lại trong 1 khoản thời gian
+        {
+            lbChuChay.Left += start; //mỗi lần time tick thực hiện thì tọa độ của label +=start
+            if (lbChuChay.Left <= 0 || lbChuChay.Left > 200){//kiểm tra tọa độ của label nếu chạm biên phải hoặc chạm biên trái
+										//nếu tọa độ<0 thì tăng tọa độ tăng lên còn nếu tọa độ mà lớn hơn hoặc bằng biên thì giảm tọa độ 
+                start = -start; //gán tọa độ bằng - chính nó;
+				//example
+				//nếu tọa độ lbChuChay.Left bằng 210 suy ra start=-10 và lbChuChay.Left+=-10 suy ra lbChuChay.Left==200.Tiếp tục thực hiện giảm tọa độ đến khi lbChuChay.Left<=0
+				//nếu lbChuChay.Left==0(lúc này start=-10) suy ra start=10(start=--10) lbChuChay.Left+=10 suy ra lbChuChay.Left==10.Tiếp tục thực hiện tăng tọa độ đến khi lbChuChay.Left>200
+				
+			}
+        }
+
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+            Application.Exit();//thoát
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------------------
+**RANDOM:
+int Numrd;  
+string Numrd_str;  
+Random rd = new Random();  
+Numrd = rd.Next(1, 100);//biến Numrd sẽ nhận có giá trị ngẫu nhiên trong khoảng 1 đến 100  
+Numrd_str = rd.Next(1, 100).ToString();//Chuyển giá trị ramdon về kiểu string  
+
+----------------------------------------------------------------------------------------------------------------------------------
+**foreach:duyện qua hết toàn bộ các phần tử trong mảng
+string[] test={"duy khang","thiện huy","duy an"};
+foreach(string item in test){
+	MessageBox.show(item.toString());
+}
+----------------------------------------------------------------------------------------------------------------------------------
+**enum:dùng để liệt kê:
+//example
+public enum Color{
+	red=1,
+	blue=2,
+	yellow=3
+}
+string str_val=Convert.toString(Color.red);
+string int_val=Convert.toInt16(Color.red);
+---------------------------------------------------------------------------------------------------------------------------------
+***RANDOM PICTURE:
+
+namespace RandomPicture
+{
+    public partial class Form1 : Form
+    {
+        string[] imageName;
+        int count;
+        int n;
+     
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            imageName = new string[] { "bietthu.jpg", "dienthoai.jpg", "maygiat.jpg", "xemay.jpg" };
+
+           
+        }
+
+        private void pc_Click(object sender, EventArgs e)
+        {
+            
+        }
+     
+        private void btLoad_Click(object sender, EventArgs e)
+        {
+            Random r = new Random();
+             n = r.Next(10,50);
+            //pc.Image = Image.FromFile(@"Images\" + imageName[n]);
+            pc.LoadAsync(@"Images\" + imageName[0]);
+            count = 0;
+        }
+
+        private void pc_LoadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            if (count<n)
+            {
+                count++;
+                pc.LoadAsync(@"Images\" + imageName[count%imageName.Length]);
+            }
+            else
+            {
+                MessageBox.Show("Bạn đã trúng"+imageName[count%imageName.Length]);
+            }
+        }
+    }
+}
+
+*PictureBox:LoadCompleted đi chung với LoadAsync:có nghĩa là khi load hình ảnh xong thì sẽ thực hiện LoadCompleted
+//example
+   private void btLoad_Click(object sender, EventArgs e)
+        {
+            Random r = new Random();
+            int n = r.Next(0, imageName.Length);
+            //pc.Image = Image.FromFile(@"Images\" + imageName[n]);
+            pic.LoadAsync(@"Images\" + imageName[n]);
+        }
+
+        private void pic_LoadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            MessageBox.Show("OK");
+        }
+
+---------------------------------------------------------------------------------------------------------------------------------
+ ***Sử dụng dấu % với mảng:có nghĩa là nếu trong đó không có phần tử mà ta cần thì nó sẽ lấy phần tử ngẫu nhiên trong mảng đó.
+ //example
+    public partial class Form1 : Form
+    {
+        string[] test;//mảng test
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            int count = 45;
+            test = new string[] { "duy khang", "thiện huy", "văn tiến", "duyên", "hân" };//trong mảng có 5 phần tử(index:0->4;
+			string val=test[count%test.Length];//nó sẽ lấy ngẫu nhiên 1 phần tử bất kì trong mảng test. Tại vì phần tử thứ 45 ko có trong mảng test nên nó sẽ lấy ngẫu nhiên nếu có thì nó sẽ lấy tại vị trí đó.
+            MessageBox.Show(val);
+        }
+    }
+----------------------------------------------------------------------------------------------------------------------
+***Đồng hổ bắm giờ sử dụng timer:
+ private void button1_Click(object sender, EventArgs e)
+        {
+           // pic1.Image = Image.FromFile(@"C:\Users\Administrator\Desktop\Project C#\RandomPicture\RandomPicture\bin\Debug\Images\bietthu.jpg");
+            //Thread.Sleep(5000);
+           // pic2.Image = Image.FromFile(@"C:\Users\Administrator\Desktop\Project C#\RandomPicture\RandomPicture\bin\Debug\Images\dienthoai.jpg");
+            timer1.Start();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (count <10)
+            {
+                lb.Text = count.ToString();
+
+            }
+            else
+            {
+                lb.Text = "Completed";
+                timer1.Stop();
+            }
+        }
+ ---------------------------------------------------------------------------------------------------------------
+ **Array PictureBox:
+ //form load
+    private void Form1_Load(object sender, EventArgs e)
+        {
+            picturebox = new PictureBox[] {pic1,pic2,pic3,pic4,pic5,pic6};
+            for (int i = 0; i < picturebox.Length; i++)
+            {
+              
+                    picturebox[i].Image = Image.FromFile(@"Images\default.jpg");
+
+                
+            }
+        }
+		
+//button Click
+    private void btRandom_Click(object sender, EventArgs e)
+        {   
+			Random r = new Random();
+            int num = r.Next(0, 6);
+            picturebox[num].Image = Image.FromFile(@"Images\pikachu.png");
+           
+        }
+-------------------------------------------------------------------------------------------------------------------------------
+**Draw C#:
+//Draw line
+ System.Drawing.Pen mypen;
+ mypen = new System.Drawing.Pen(System.Drawing.Color.Red);
+System.Drawing.Graphics formGraphics = this.CreateGraphics();
+formGraphics.DrawLine(mypen, 0, 0, 200, 200);//tham số đầu tiên là đối tượng cần vẽ,2 tham số tiếp theo là vị trí của đối tượng(x,y),2 tham số cuối cùng là kích thước của đối tượng (with,height)
+// formGraphics.DrawRectangle(mypen,100,100,50,50);//draw rectangle
+mypen.Dispose();
+formGraphics.Dispose();
+-------------------------------------------------------------------------------------------------------------------------------
+***foreach()
+//example
+String[]s=new String[]{"duy khang","thien huy","van tien"};
+ foreach(String item in s){
+	 
+ }
+------------------------------------------------------------------------------------------------------------------------------------------
+***List:
+namespace Demo_List
+{
+    public partial class Form1 : Form
+    {
+        String[] mang=new String[]{"Duy khang","Thien Huy"};
+        List<String> list;
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {   
+		//lấy phần tử trong list add vào mảng
+             list = mang.ToList();
+            list.Add("Duy Khang");
+            list.Add("Van Tien");
+            list.Add("THien Huy");
+             mang=list.ToArray();
+            foreach(String s in mang){
+       
+                MessageBox.Show(s);//
+            }
+        }
+    }
+}
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

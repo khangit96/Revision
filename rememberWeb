@@ -1,0 +1,719 @@
+
+================================================PHP==============================================================
+**char set utf-8
+header('Content-type: text/plain; charset=utf-8');
+------------------------------------------------------------------------------------------------------
+**SO SÁNH GIỮA POST VÀ GET:
+-Giống nhau:đều gửi dữ liệu lên server
+-Khác nhau:
++Phương thức POST bảo mật hơn GET vì dữ liệu được gửi ngầm bằng mắt thường không thể nhìn thấy được.
++Phương thức GET dữ liệu được gửi tường minh, chúng ta có thể thấy trên URL nên nó không bảo mật.
++Phương thức GET luôn luôn nhanh hơn POST vì dữ liệu gửi đi được Browser giữ lại trong cache,
+ khi thực thi với POST thì Server luôn thực thi lệnh rồi trả về cho Client,
+ còn với GET thì Browser sẽ kiểm tra trong cache có chưa, nếu có thì trả về ngay chứ không cần gửi lên Server.
+
+----------------------------------------------------------------------------------------------------------------
+**Nối chuỗi bằng dấu “,” sẽ nhanh hơn dấu “.”
+Thói quen khi lập trình PHP thường là nối chuỗi và biến bằng dấu “.”. 
+Nhưng thực tế là khi nối chuỗi bằng dấu “,” thì tốc độ xử lý của ứng dụng sẽ được cải tiến và nhanh hơn rất nhiều. 
+Tác giả của bài viết này cũng đã thực hiện ứng dụng để chứng minh điều đó.
+//example
+<?php
+echo $str1 . $str2;
+echo $str1 , $str2; // Nhanh hơn  
+?>
+----------------------------------------------------------------------------------------------------------------------
+***Luôn dùng dấu nháy để truy cập khóa của 1 mảng:
+<?php
+$a = $b['abc']; // nhanh hơn
+ 
+$a = $b[abc]; 
+?>
+---------------------------------------------------------------------------------------------------------------------
+
+***Echo luôn luôn hoạt động nhanh hơn print, vì echo không có return gì cả, trong khi print thì luôn return true hay false ( 0 | 1)
+
+----------------------------------------------------------------------------------------------------------
+*CHUYỂN ĐỔI PHP THÀNH JSON:
+	json_encode($arr);
+-------------------------------------------------------------------------------------	
+*CHUYỂN ĐỔI JSON THÀNH PHP;
+	json_decode($arr);
+--------------------------------------------------------------------------------------	
+**header('Content-type: text/xml') //Sử dụng định dạng xml cho text
+--------------------------------------------------------------------------------------
+**file_get_contents //đọc nội dung từ url
+*PUSH ARRAY:
+	array_push($arr,"khang");
+	
+----------------------------------------------------------------------------------------
+*KHI TẠO HÀM TRÙNG TÊN VỚI LỚP->GIỐNG VỚI HÀM KHỞI TẠO ;
+// $sp=new sanpham("quần")
+class sanpham{
+	private $name;
+	
+	function sanpham($n){
+	$this->name=$n;
+	}
+	function show(){
+	echo $this->name;
+	}
+}
+-----------------------------------------------------------------------------------------
+
+***PHP substr:LÀ HÀM DÙNG ĐỂ CẮT CHUỔI:
+	//cách dùng
+	substr(chuổi,vị trí bắt đầu,độ dài)
+------------------------------------------------------------------------------------------	
+*** PHP strlen:HÀM LẤY ĐỘ DÀI CHUỔI	
+	//cách dùng
+	strlen(chuổi);
+	string s;
+	$le=strlen(s);
+------------------------------------------------------------------------------------------
+***PHP strtoupper:LÀ HÀM DÙNG ĐỂ IN HOA CHUỔI:
+	//cách dùng:
+	string s;
+	$inhoa=strtoupper(s);
+------------------------------------------------------------------------------------------		
+***PHP strtolower:LÀ HÀM DÙNG ĐỂ IN CHỮ THƯỜNG:
+	//cách dùng
+		string s;
+		$inthuong=strtolower(s);
+-------------------------------------------------------------------------------------------		
+**PHP ucfirst:LÀM HÀM DÙNG ĐỂ IN HOA KÍ TỰ ĐẦU TIÊN TRONG CHUỔI:
+	//cách dùng
+	string s="duy khang";
+	$first=ucfirst(s);//kết quả là "Duy khang"
+------------------------------------------------------------------------------------------	
+	
+**PHP ucwords:LÀ HÀM DÙNG ĐỂ IN HOA KÍ CHỮ CÁI ĐẦU TIÊN CỦA MỖI TỪ TRONG CHUỔI:
+		//cách dùng
+		string s="duy khang";
+		$result=ucwords(s);//kết quả là "Duy Khang"
+--------------------------------------------------------------------------------------------
+**PHP strstr:LÀM HÀM DÙNG ĐỂ CẮT CHUỔI TỪ VỊ TRÍ NÀO ĐÓ
+	//cách dùng
+	$s="Nguyen Ho DUy Khang";
+	$result=strstr($s,"Duy");//kết quả là "Duy Khang"
+	echo $result;
+-----------------------------------------------------------------------------------------------	
+***	TRÁNH KÍ TỰ ĐẶC BIỆT TRÊN URL:
+	//cách dùng
+	$link="Khóa-Học-PHP-&-MySQL";
+	echo "<a href='".rawurlencode($link)."'>".$link."</a>";
+	
+-----------------------------------------------------------------------------------	
+***PHP  str_word_count : Đếm tổng số từ có trong chuỗi
+	//cách dùng
+	$count=str_word_count('nguyen hồ dư khâg');
+	echo $count;//kết quả là 5. nếu có dấu thì sẽ được tính là 1 từ
+
+------------------------------------------------------------------------------------	
+
+-----------------------------------------------------------------------------------------
+**PHP IN KÍ TỰ ĐẶT BIỆT:BAO Ở NGOÀI BẰNG CẶP DẤU NHÁY ĐƠN
+$form='"/cách xử lí form"';
+echo $form;//kết quả "/cách xử lí form"
+	
+---------------------------------------------------------------------------------------------------	
+**HÀM mysql_real_escape_string() của php:LÀ HÀM DÙNG ĐỂ TRÁNH NHỮNG KÍ TỰ ĐẶC BIỆT GIÚP WEBSITE BẢO MẬT HƠN
+//example
+$user=mysql_real_escape_string('tuan');
+$pass=mysql_real_escape_string("'OR''='");
+$sql="SELECT *FROM user WHERE user='{$user}' AND pass='{$pass}';
+echo $sql;
+---------------------------------------------------------------------------------------------------------	
+**HÀM addslashes() của mysql:LÀ HÀM DÙNG ĐỂ TRÁNH NHỮNG KÍ TỰ ĐẶC BIỆT GIÚP WEBSITE BẢO MẬT HƠN
+//example
+$user=addslashes('tuan');
+$pass=addslashes("'OR''='");
+$sql="SELECT *FROM user WHERE user='{$user}' AND pass='{$pass}';
+echo $sql;	
+	
+-----------------------------------------------------------------------------------------------------------	
+***HÀM strip_tags():LÀ HÀM DÙNG ĐỂ LOẠI BỎ NHỮNG ĐOẠN SCRIPT
+//use
+$tag="Duy KHang <script>alert('hello')</script>";
+$tag_fix=strip_tags($tag);
+echo $tag_fix; // kết quả DUy KHang alert('hello')
+--------------------------------------------------------------------------------------------------	
+***PHP trim():LÀ HÀM DÙNG ĐỂ LOẠI BỎ CÁC KHOẢNG TRẮNG KHÔNG CẦN THIẾT
+//example
+$s="    nguyen ho duy khang";
+$a=strlen($s);
+echo $a;//kết quả sẽ là 23 (tính khoảng trắng)
+$b=trim($s);
+echo $b;//kết quả chỉ là 19(hàm trim đã loại bỏ những khoảng trắng ko cần thiết)
+--------------------------------------------------------------------------------------
+***HÀM XỬ LÝ CHUỔI GIÚP WEBSITE BẢO MẬT	
+<?php 
+	function xulychuoi($str){
+	$str_fix=addslashes(strip_tags(trim($str)));
+	return $str_fix;
+	}
+?>
+--------------------------------------------------------------------------------------------	
+***PHP wordwrap():LÀM HÀM DÙNG ĐỂ NGẮT VĂN BẢN XUỐNG DÒNG KHI VĂN BẢN DÀI
+//example
+$wr="nguyen ho duy khang jfđ dfdfd fđfdffđ gfdgdf fdfdf";
+$wr_fix=wordwrap($wr,20,"<br/>");//cứ 20 kí tư là xuống dòng
+
+-------------------------------------------------------------------------------------------------------------------
+*** str_replace(chuổi cần tìm, chuổi thay thế, chuổi cần thay thế):LÀ HÀM DÙNG ĐỂ THAY THẾ CHUỔI BẰNG 1 CHUỔI KHÁC;
+//example
+<?php 
+ $word="PHP";
+ $text="Lập trình PHP";
+ echo str_replace($word, "Web", $text);//kết quả:Lập trình Web
+ ?>
+
+
+--------------------------------------------------------------------------------------------------------------------	
+***TẠO MẢNG TỬ CHUỔI:
+//example
+<?php 
+$arr="duy khang
+	Thiện huy
+	";
+	$lines=explode(PHP_EOL, $arr);
+	foreach ($lines as $l) {
+		echo $l."<br>";//kết quả duy khang
+ 				   // Thiện huy
+	}
+ ?>	
+ -------------------------------------------------------------------------------------------
+***NỐI CHUỔI VỚI MẢNG:
+//example
+	<?php 
+  	$drink=array("dừa","cam","chanh");
+  	$fruit=array("bưởi","vãi","chuối");
+  	$money=array("20000","30000","50000");
+  	$format="Khang đang ăn %s và uống %s với số tiền là %d"; //%s là chuổi còn %d là số nguyên
+  	for($i=0;$i<3;$i++){
+  		printf($format,$fruit[$i],$drink[$i],$money[$i]);
+  		echo "<br>";
+  	}
+    ?>
+	
+------------------------------------------------------------------------------------------------	
+	
+-App realTime with Meteor and Realtime
+-dùng parent khi kế thừa sẽ giữ toàn bộ của lớp cha và bổ sung thêm của lớp con
+-một số hàm magic trong OPP PHP:
++function __construct()
++function __destruct()
++function __autoload() khi khai báo tên lớp phải cùng tên file
+stand out->nổi bật
+-hàm autoload trong php có chức năng tự động load tất cả các class cần thiết mà không cần phải làm thủ công. Chú ý là tên file phải giống với 
+tên class
+--------------------------------------------------------------------------------------------	
+
+**QUICK FORM PHP:
+<?php 
+/*load trang php Quick Form*/
+ include("HTML/QuickForm2.php");
+
+
+ /*Khỏi tạo class và đặt tên cho form*/
+$form=new HTML_QuickForm2('register','post');
+
+/*chiều dài form textbox*/
+$opt=array('size'=>50,'maxlenght'=>255);
+
+/*thêm phần tử vào form và xây dựng form*/
+$hoten=$form->addElement('text','txtHoTen',$opt)->setLabel("Vui lòng nhập họ tên");
+
+$matkau=$form->addElement('password','txtMatkhau',$opt)->setLabel("Vui lòng nhập mật khẩu");
+$xacNhanMatKhau=$form->addElement('password','txtXacnhanmatkhau',$opt)->setLabel("Vui lòng nhập lại mật khẩu");
+
+$sodienthoai=$form->addElement('text','txtDienthoai',$opt)->setLabel("Vui lòng nhập số điện thoại");
+
+$email=$form->addElement('text','txtEmail',$opt)->setLabel("Vui lòng nhập email");
+
+$thanhpho=$form->addElement('select','selCity')->setLabel("Vui lòng chọn thành phố")
+->loadOptions(array('HCM'=>"Hồ Chí Minh",'ĐN'=>"Đà Nẵng"));
+
+$giotinh=$form->addElement('group','gender',$opt)->setLabel("Vui lòng chọn giới tính");
+$giotinh->addElement('radio','rdoGender',array('class'=>'rdoGender','value'=>1,'checked'),array('content'=>'Nam'));
+$giotinh->addElement('radio','rdoGender',array('class'=>'rdoGender','value'=>2,'checked'),array('content'=>'Nữ'));
+
+$monhoc=$form->addElement('group','study')->setLabel("Vui lòng chọn môn học");
+$monhoc->addElement('checkbox',null,array('value'=>'PHP'))->setContent('Lập trình PHP');
+$monhoc->addElement('checkbox',null,array('value'=>'IOS'))->setContent('Lập trình IOS');
+$button=$form->addElement('submit','btRegister',array('value'=>'Đăng Ký'));
+
+/*hiện form*/
+echo $form;
+ ?>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+=============================JQUERY/JAVASCRIPT=================================================
+*** JQUERY parent().find() hữu ích khi áp dụng với mảng nhiều phần tử và các phần tử phải có cùng class
+<script>
+   $(document).ready(function(){
+     $("#click").click(function(){
+     //  var id=$(this).attr("value");//tìm thuộc tính của của chính thằng click
+       var val=$(this).parent().find(".ip").val();// từ thằng click tìm cha của nó rồi từ cha nó tìm thằng có class="ip"
+       alert(val);
+     });
+   });
+ </script>
+
+--------------------------------------------------------------------------------------------------
+**JAVASCRIPT ARRAY:
+ var arr=[];
+ // add array
+ arr.push("khang");
+ arr.push("huy");
+ // check item exists
+  if(arr.indexOf(data)>-1){//tồn tại item
+  		console.log("Đã tồn tại user");
+  	}
+  	else{
+  	console.log("Không tồn tại");
+	}
+ --------------------------------------------------------------------------------------------------
+
+ 
+ 
+ 
+ 
+--------------------------------------------------------------------------------------------------
+**JQUERY hide/show:
+	<script>
+		$(document).ready(function(){
+			$("#unlike").hide();
+			$("#like").click(function(){
+				$(this).hide();
+				//$("#unlike").css("visibility","visible");
+				$("#unlike").show();
+			});
+			$("#unlike").click(function(){
+				$(this).hide();
+				$("#like").show();
+			});
+		});
+	</script>
+-------------------------------------------------------------------------------------------------
+*APPEND JQUERY:
+	$("button").click(function(){
+		$("p").append("<b>Appended text</b>");
+	});
+	 $(".class").append("Khang"); //Thêm sau
+     $(".class").prepend("Khang");//Thêm trước
+	 
+-------------------------------------------------------------	 
+
+*AFTER,BEFORE JQUERY:
+	 $(".append").after("<div>khang</div>");
+     $(".append").before("<div>khang</div>");
+     });
+--------------------------------------------------------------------------------------	 
+	 
+*JQUERY REMOVE/EMPTY:
+		$("#remove").click(function(){
+   			$(".test").remove();
+   		});
+   		$("#empty").click(function(){
+   			$(".test").empty();
+   		});
+----------------------------------------------------------------------------------------------		
+		
+*JQUERY TEXT/HTML:
+		$("#change").click(function(){
+   			$(".test").text("<b>I am coder<b>");//Không thay đổi được thuộc tính
+			$(".test").html("<b>I am coder<b>");//Thay đổi được thuộc tính
+   		});
+-----------------------------------------------------------------------------------------------		
+*JQUERY HIDE/SHOW/TOGGLE:
+		$("#hide").click(function(){
+			$("p").hide("fast");// ẩn element, có thể truyền tham số
+		});
+		$("#show").click(function(){
+			$("p").show("slow");// ẩn element, có thể truyền tham số;
+			$("p").toggle();
+		});
+---------------------------------------------------------------------------------------------------		
+*JAVASCRIPT getElementByTagName:
+	<p>Khang</p>
+	<p>Huy</p>
+	<p>Tien</p>
+	<h3 id="show"></h3>
+<script>
+	 var x = document.getElementsByTagName("p");
+	 document.getElementById("show").innerHTML="P with index 0 is: "+x[0].innerHTML;
+</script>
+
+-------------------------------------------------------------------------------------------------------
+*JQUERY FADE:
+	<script>
+		$(document).ready(function(){
+			$("#fadeIn").fadeOut();
+			$("#bt").click(function(){
+				$("#fadeIn").fadeIn();
+				$("#fadeOut").fadeOut();
+				$("#fadeToggle").fadeToggle();
+				$("#fadeTo").fadeTo(1000,0.4);
+			});
+		});
+	</script>
+
+-----------------------------------------------------------------------------------------------------------	
+*JQUERY SLIDE:
+	$(document).ready(function(){
+				$("#bt").click(function(){
+					//$("#panel").slideDown();
+					//$("#panel").slideDown();
+					$("#panel").slideToggle();
+					
+				});
+			});
+
+---------------------------------------------------------------------------------------------------------------
+
+*JQUERY ANIMATION:
+	$(document).ready(function(){		
+				$("#bt").click(function(){
+					$("#animate").animate({
+						"margin-left":"500px",
+						opacity:"0.5",//độ mờ
+						with:"200px",
+						height:"200px"
+					},5000)
+					
+				});
+			});
+-----------------------------------------------------------------------------------------------------------------------
+*KHÁC NHAU GIỮA CLASS VÀ ID :CLASS THÌ CÓ THỂ CÓ NHIỀU CÒN ID THÌ CHỈ CÓ MỘT:ÁP DỤNG VÀO TRONG MẢNG THÌ DÙNG CLASS.
+
+--------------------------------------------------------------------------------------------------------------------------
+
+**LẤY GIÁ TRỊ CỦA MẢNG BẰNG JQUERY:
+	//html
+	  <li  class="like" id="{{$status->id}}"><a href="#">Like</a></li>
+   //jquery/javascript
+		$(".like").click(function(){
+			var id=$(this).attr("id");
+			alert(id);
+			)};	
+
+
+--------------------------------------------------------------------------------------------------------------------------			
+**LOAD JQUERY:
+  $.ajaxSetup({cache:false});
+  setInterval(function(){$('#notification').load("http://localhost/code/chatLaravel/notification?n2="+nameUser2);},1000);
+			
+			
+			
+			
+			
+
+
+			
+			
+			
+			
+			
+
+=============================LARAVEL========================================================================
+***LARAVEL RELATIONSHIP:
+	-one-many;
+	-many-many;
+	-hasManyThrought;
+	-polymorphic:
+		+Một model có thể thuộc về một hoặc nhiều model khác:
+		+ví dụ như table comment:
+					int id;
+					commentable_id;// tương ứng với model id
+					commentable_type;//thuộc kiểu model nào
+			ví dụ như commentable_id =1; commentable_type=App\User-> có ngĩa là User có id=1 sẽ có comment đó;
+		+hình thức:
+	//method thực hiện polymorphic relationship đều giống nhau ở tất cả các model mà sở hữu bình luận
+	public function comments(){
+			return $this->morphMany('App\Comment','commentable');
+			
+		}
+		
+--------------------------------------------------------------------------------------------------------------------------	
+		
+***LARAVEL QUERY :
+		//câu truy vấn này sẽ tìm trong bảng statuses record có user_id=1 hoặc là user_id bằng với id của record comment của user=1;
+		$user=User::find(1);
+		$list=Status::where('user_id',1)->orWhereIn('user_id',$user->comments->lists('id'))->get();
+-------------------------------------------------------------------------------------------------------------------------------			
+	
+***LARAVEL PAGINATE:
+	dùng với render();
+	ví du: {{!!$status->render()!!}}
+
+----------------------------------------------------------------------------------------------------------------------------			
+***CARBON là một thư viện PHP hổ trợ cho việc lấy ngày tháng :
+	-Dùng với laravel: https://github.com/LaravelRUS/localized-carbon
+	
+-----------------------------------------------------------------------------------
+**LARAVEL SCOPE:
+
+
+------------------------------------------------------------------------------------
+**LARAVEL whereNull:kiểm tra trường dữ liệu của những cột NULL:
+//example
+$users = DB::table('users')
+                    ->whereNull('updated_at')
+                    ->get();
+----------------------------------------------------------------------------------
+**LARAVEL UPDATE :
+DB::table('statuses')
+            ->where('id', $ID)
+            ->update(['like' => $like_count]);
+			
+------------------------------------------------------------------------------------------------	
+**LARAVEL :TẠO ROW DỰA VÀO MỐI QUAN HỆ GIỮA CÁC MODEL
+
+//model User:mỗi user thì có nhiều bài viết
+public function articles() {
+		return $this->hasMany('App\Article');
+	}
+//tạo ra đối tượng Article dựa vào relationship with User
+$user=User::find(1); // tạo ra đối tường Article với user_id=$user
+		$user->articles()->create([
+			'name'=>"Tin vit",
+			'poster_id'=>1
+			]);
+-----------------------------------------------------------------------------------------------------------
+***LARAVEL associate:LÀ PHƯƠNG THỨC DÙNG ĐỂ SET LẠI FOREIGN KEY CỦA MODEL VỚI RELATIONSHIP BELONGTO:
+//cập nhật lại Article với id =1
+$article=Article::find(1);
+		$user=User::find(1);
+		$article->getNameUser()->associate($user);// set user_id=$user
+		$article->save();
+	
+	
+
+=============================NODE JS========================================================================
+**Install:
+- Cài đặt NodeJS: nodejs.org & git-scm.com
+-----------------------------------------------------------------------------------------------------------
+
+**SERVICE:heroku,openshift:
+-----------------------------------------------------------------------------------------------------------
+Tham khảo kết nối openshift nodejs mongo-mysql: https://github.com/JakubMrozek/openshift-nodejs-mongo-mysql
+-----------------------------------------------------------------------------------------------------------
+**CONNECT NODEJS MYSQL Openshift:
+//required mysql
+ var mysql = require('mysql');
+//mysql configuration
+var mysqlHost = process.env.OPENSHIFT_MYSQL_DB_HOST || 'localhost';
+var mysqlPort = process.env.OPENSHIFT_MYSQL_DB_PORT || 3306;
+var mysqlUser = 'adminFuvIS8y'; //mysql username
+var mysqlPass = 'WSziu4UDaxre'; //mysql password
+var mysqlDb   = 'demo'; //mysql database name
+
+//connection strings
+var mysqlString = 'mysql://'   + mysqlUser + ':' + mysqlPass + '@' + mysqlHost + ':' + mysqlPort + '/' + mysqlDb;
+
+
+//connect to mysql
+var mysqlClient = mysql.createConnection(mysqlString);
+mysqlClient.connect(function(err){
+  if (err) {
+  	console.log("loi roi ban oi");
+  }else{
+  	console.log("connect thanh cong");
+  }
+});
+-----------------------------------------------------------------------------------------------------------
+**Thao tác với openshift:
+   env | grep MYSQL //thông tin mysql
+   tail_all //get log
+-----------------------------------------------------------------------------------------------------------
+**PHÍA SERVICE:
+//io.socket.on là mặc định cho service
+// socket.on là service lắng nghe.
+// socket.emit là service gửi kết quả về dạng json
+io.sockets.on('connection', function (socket) {
+  console.log("Co nguoi connect ne");
+  socket.on('client-gui-username', function (data) {
+  	console.log("CLIENT VUA DANG KY USERNAME"+data);
+  	if(mangUsernames.indexOf(data)>-1){
+  		console.log("Đã tồn tại user");
+  		ketqua=false;
+  	}
+  	else{
+  	mangUsernames.push(data);
+  	console.log("Add thành công");
+  	ketqua=true;
+	socket.un=data;//kết nối với từng user
+	io.sockets.emit('server-gui-usernames',{noidung:data});//service gửi đến tất cả các máy
+  }
+  socket.emit('ketquaDangKyUn',{noidung:ketqua});
+  }); 
+});
+
+	
+	
+	
+	
+	
+--------------------------------------------------------------------------------------------------------------
+
+**CONNECT NODE JS to MYSQL :
+
+//yêu cầu mysql
+var mysql = require("mysql");
+
+// Tạo kết nối đến database
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "chatty"
+});
+
+//kiểm tra kết nối
+con.connect(function(err){
+  if(err){
+    console.log('Error connecting to Db');
+    return;
+  }
+  console.log('Connection established');
+});
+
+//truy vấn
+con.query('SELECT * FROM tfests',function(err,rows){
+  if(err){
+  	console.log("lỗi khi truy cập bảng dữ liệu");
+  }
+  else{
+	  console.log('Data received from Db:\n');
+	  console.log(rows);
+	  for (var i = 0; i < rows.length; i++) {
+	  console.log(rows[i].name);
+		};
+	}
+});
+
+//kết thúc kết nối
+con.end(function(err) {
+
+});	
+
+----------------------------------------------------------------------------------------------------------------
+***Connect PHP MYSQL TO OPENSHIFT:
+define( "DB_SERVER",    getenv('OPENSHIFT_MYSQL_DB_HOST') );
+ 
+ define( "DB_USER",      getenv('OPENSHIFT_MYSQL_DB_USERNAME') );
+ 
+ define( "DB_PASSWORD",  getenv('OPENSHIFT_MYSQL_DB_PASSWORD') );
+ 
+ define( "DB_DATABASE",  getenv('OPENSHIFT_APP_NAME') );
+ 
+ 
+ mysql_connect(DB_SERVER,DB_USER,DB_PASSWORD) or die(mysql_error());
+mysql_select_db(DB_DATABASE) or die(mysql_error());
+ 
+ $q = "select * from Information";
+ $result = mysql_query($q) or die(mysql_error());
+ 
+ while ($row = mysql_fetch_array($result))
+         {
+                 echo $row['content'];
+                
+         }
+mysql_close();
+
+--------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+=======================================================GIT=========================================================
+***THIẾT LẬP CHỨNG THỰC CÁ NHÂN:
+$ git config --global user.name "Thach Pham"
+$ git config --global user.email "contact@thachpham.com"
+--------------------------------------------------------------------------------------------------------------------
+***Repository (kho chứa) nghĩa là nơi mà bạn sẽ lưu trữ mã nguồn và một người khác có thể sao chép (clone) lại mã nguồn 
+đó nhằm làm việc. Repository có hai loại là Local Repository (Kho chứa trên máy cá nhân) và Remote Repository
+(Kho chứa trên một máy chủ từ xa).	
+--------------------------------------------------------------------------------------------------------------------	
+***TẠO LOCAL REPOSITORY:
+$ git init
+--------------------------------------------------------------------------------------------------------------------
+***Nếu kho chứa của bạn đã có sẵn mã nguồn mà cần cập nhật lại:
+$ git add readme.txt //git add . là add lại tất cả
+--------------------------------------------------------------------------------------------------------------------
+***GIT ĐƯA FILE LÊN SERVER SAU KHI THAY ĐỔI HOẶC LẦN ĐẦU
+$ git commit -m "First Commit"
+-------------------------------------------------------------------------------------------------------------------
+**clone git:lấy REPOSITORY từ github
+$ git clone https://github.com/khangit96/demo-use-git.git
+------------------------------------------------------------------------------------------------------
+**CÁC BƯỚC ĐỂ UPLOAD CODE LÊN GITHUB
+//step 1
+$ git init 
+//step 2
+$ git add .
+//step 3
+$ git commit m"hello"
+//step 4
+$ git push
+------------------------------------------------------------------------------------------------------
+*** Xem log :xem log những lần đã commit:
+$ git log
+$ git log -p //xem chi tiết
+$ git log -1 //xem lần commit gần nhất
+
+//có thể sử dụng thêm các tham số khác
+--since, --after: Xem các lần commit kể từ ngày nhất định.
+--until: Xem các lần commit trước từ ngày nhất định.
+--author: Xem các lần commit của một người nào đó.
+--grep: Lọc các chuỗi trong log và in ra
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
+		
