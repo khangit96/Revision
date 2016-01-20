@@ -422,15 +422,66 @@ catch{
             {
                 val += cbHoa.Text;//kiểm tra xem có check hay koh
             }
-------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------
 **ComboBox:
  cbox.Items.Add("Pro"); //add item ComboBox
  comboBox1.Items.Remove("Xe đạp");//remove vị trí bằng giá trị text
  string var;
  var = cbox.Text; //lấy giá trị item đã chọn
  MessageBox.Show(var);
- 
--------------------------------------------------------------------------------------------------------------
+ ----------------------------------------------------------------------------------------------------------------------------------------
+namespace TestCombobox
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {   //lấy giá trị của combobox khi chọn
+            string val = cb.Text;
+            MessageBox.Show(val.ToString());
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //Thêm vào combobox
+          cb.Items.Add("Trung Qốc");
+          cb.Items.Add("Nhật Bản");
+          cb.Items.Add("Việt Nam");
+            //Đặt giá trị mặc định khi load combobox
+          cb.Text = "Chưa có";
+        }
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------
+namespace TestListBox
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {   //thêm item vào Listbox
+            lb.Items.Add("Duy Khang");
+            lb.Items.Add("Thiện Huy");
+
+        }
+
+        private void lb_SelectedIndexChanged(object sender, EventArgs e)
+        {   //sự kiện khi chọn item
+            string val = lb.Text;
+            MessageBox.Show(val);
+
+        }
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------
 **CONNECT DATABASE SQL SERVER TO C# APPLICATION
 
 //Cài SQL MANAGEMENT STUDIO 2012

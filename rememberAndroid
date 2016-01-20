@@ -19,8 +19,146 @@ adb connect 192.168.43.1 //địa chỉ của trạm phát wifi tìm thấy ở 
 pause //ngừng lại để xem
 
 *note:lần đầu chạy phải cắm cable để nó nhận port, sau đó có thể rút ra(ko cần mạng)
+------------------------------------------------------------------------------------------------------------------------------------
+**Các loại lưu trữ dữ liệu trên android:
+//Shared Preferences
+  Lưu trữ private data bằng cặp key-value.
+  Thư mục lưu trữ: /data/data/<package_name>/shared_prefs/.xml
+  Được sử dụng để lưu trữ các thông tin settings cho ứng dụng.
+//Internal Storage
+  Lưu trữ private data trên bộ nhớ của thiết bị.
+//External Storage
+ lưu trữ public data trên bộ nhớ ngoài.
+//SQLite Databases
+ Lưu trữ structured data trong một file private database.
+//Network Connection
+ Lưu trữ data trên server, tạo các service để lấy về thiết bị.
+------------------------------------------------------------------------------------------------------------------------------------
+**Internal Storage:lưu trữ bằng bộ nhớ trong android,để xem được dữ liệu đã lưu,cần phải có quyền root
 
+//ghi dữ liệu vào bộ nhớ trong 
+ FileOutputStream fileOutputStream;//khai báo biến toàn cục
+ public void WriteData(String data) {
+        fileOutputStream = null;
+        try {
+            fileOutputStream = openFileOutput("Data.txt", Context.MODE_PRIVATE);
+            fileOutputStream.write(data.getBytes());
+            Toast.makeText(MainActivity.this,"Write Successed",Toast.LENGTH_LONG).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
+    }
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+**External Storage:Lưu dữ liệu vào bộ nhớ ngoài:nếu có sdcard thì lưu vào sdcard còn nếu ko thì sẽ lưu vào bộ nhớ máy và có thể xem được
+//hàm lưu file.Nếu có thẻ nhớ thì lưu vào thẻ nhớ  còn không thì sẽ lưu vào bộ nhớ máy có thể xem đk
+ private void saveFileExternal() {
+        // TODO Auto-generated method stub
+        OutputStreamWriter writer = null;
+        // Get sdCard path
+        File sdCard = Environment.getExternalStorageDirectory();//lấy  đường dẫn sdCard.
+        if (sdCard.exists()) {// Check Sdcard exists
+            File directory = new File(sdCard.getAbsolutePath() + "/MyFiles");//có thể tạo thư mục để lưu file
+            if (!directory.exists()) {//nếu đường dẫn trên ko tồn tại thì sẽ tạo đường dẫn đó
+                directory.mkdirs();
+            }
+            File file = new File(directory, "test_file.txt");//tạo file với đường dẫn trên
+            try {
+                writer = new OutputStreamWriter(new FileOutputStream(file));
+                writer.write("Ok");
+                writer.flush();
+               // this.editText.setText("");
+                Toast.makeText(this, "Save file sucess", Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } finally {
+                if (writer != null) {
+                    try {
+                        writer.close();
+                    } catch (IOException e) {
+                        // TODO: handle exception
+                    }
+                }
+            }
+
+        } else {
+            System.err.println("Storage sdCard not exists");
+        }
+    }
+//có thể sử dụng hàm này để kiểm tra tình trạng có hay ko có external storage
+ public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+	
+//Xác định đường dẫn sdcard
+  String separator = "/";
+  String sdcardPath = Environment.getExternalStorageDirectory().getPath() + separator;
+ Toast.makeText(MainActivity.this,sdcardPath,Toast.LENGTH_LONG).show();
+----------------------------------------------------------------------------------------------------------------------------------------------
+**Turnon/Turnoff camera flashlight:
+//Khai báo biến toàn cục
+  private  Camera camera=null;
+  private  boolean isFlashlightOn;
+  Parameters parameters;
+  
+//ở hàm onCreate()
+  boolean isCameraFlash=getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+        if(!isCameraFlash){
+            showToast("Device hasn't camera flash");
+        }
+        else{
+           camera=Camera.open();
+            parameters=camera.getParameters();
+        }
+//ở hàm onStop()
+ @Override
+    protected void onStop() { //tránh tình trạng crash app
+        super.onStop();
+
+        if (camera != null) {
+            camera.release();
+        }
+}
+//turn on
+ public  void setFlashlightOn(){
+       parameters=camera.getParameters();
+       parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
+       camera.setParameters(parameters);
+       camera.startPreview();
+       isFlashlightOn=true;
+   }
+ //turn off
+    public  void setFlashlightOff(){
+        parameters=camera.getParameters();
+        parameters.setFlashMode(Parameters.FLASH_MODE_OFF);
+        camera.setParameters(parameters);
+        camera.stopPreview();
+        isFlashlightOn=false;
+    }
+//event click
+  public void Turnon(View v) {
+            setFlashlightOn();
+    }
+ public  void Turnoff(View v){
+        setFlashlightOff();
+  }
 -------------------------------------------------------------------------------------------------------------------------------------
 **https://github.com/wasabeef/awesome-android-ui //UI ANDROID
 ----------------------------------------------------------------------------------------------------------------------------------
@@ -961,7 +1099,83 @@ Ví dụ:BroadcastReceiver bắt được thông báo có tin nhắn đến sau 
             </intent-filter>
   </service>
 
-----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+**TA CÓ THỂ DÙNG NHIỀU BROADCASTRECEIVER CHO 1 ỨNG DỤNG
+//example BroadcastReceiver sẽ bắt thông báo khi có wifi thay đổi(connected,disconnected) và bắt thông báo khi cắm sặc còn service thì thực hiện chạy nền xử lý
+ 
+ /***1.class MyBroadcastReceiver.java extends từ BroadcastReceiver***/
+public class MyBroadcastReceiver extends BroadcastReceiver {
+    public  static final String Action_Connected="android.intent.action.ACTION_POWER_CONNECTED";
+    public  static final String Action_Wifi="android.net.wifi.STATE_CHANGE";
+    @Override
+    public void onReceive(Context context, Intent intent) {
+		//nếu bắt đk sự kiện wifi thay đổi thì sẽ start 1 service
+        if (intent.getAction().equals(Action_Connected)){
+            Intent serviceConnect=new Intent();
+            serviceConnect.setAction("ConnectService");
+            context.startService(serviceConnect);
+
+        }
+		//nếu bắt đk sự kiện khi cắm sạc thì sẽ start 1 service
+      if(intent.getAction().equals(Action_Wifi)) {
+          Intent serviceWifi=new Intent();
+          serviceWifi.setAction("WifiService");
+          context.startService(serviceWifi);
+        }
+    }
+}
+
+/***2.class WifiService.java extends từ Service để xử lí khi wifi thay đổi***/
+public class WifiService extends Service {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+        Toast.makeText(getApplicationContext(), "Wifi changed", Toast.LENGTH_LONG).show();
+    }
+}
+
+/***3.class ConnectService.java extends từ Service để xử lí khi cắm sạc ***/
+
+public class ConnectService extends Service {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_LONG).show();
+    }
+
+}
+
+
+/***4.AndroidMaintifest.xml bổ sung thêm tag service và tag receiver ***/
+  <receiver android:name="MyBroadcastReceiver">
+            <intent-filter android:priority="1">
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".WifiService">
+            <intent-filter>
+                <action android:name="WifiService"/>
+            </intent-filter>
+        </service>
+        <service android:name=".ConnectService">
+            <intent-filter>
+                <action android:name="ConnectService"/>
+            </intent-filter>
+        </service>
+----------------------------------------------------------------------------------------------------------------------------------------
 **Kiểm tra đối tượng có tồn tại trong ArrayList hay ko:
  ArrayList<String> arrlist=new ArrayList<String>();
  if(arrlist.contain("khang")){// điều kiện này là có tồn tại
@@ -2273,6 +2487,7 @@ Integer s_fix=Integer.parseInt(s);//kết quả sẽ là một số nguyên
         String s = null;
         for (String animal : animals) {
           //s=animals[2];//lấy phần tử thứ 2
+		  s=animal;
 		  s=animal;
           Toast.makeText(MainActivity.this,s, Toast.LENGTH_LONG).show();//kết quả là khang
         }
