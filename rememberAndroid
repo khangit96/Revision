@@ -1,6 +1,208 @@
 
 =========================================================ANDROID=====================================================================================
+***RecyclerView:
+-RecyclerView là một View mới trong android giống như ListView nhưng mạnh mẽ hơn rất nhiều.
+-RecyclerView cho phép chúng ta load dữ liệu nhiều hơn ListView, vuốt mượt hơn, hiệu ứng đẹp hơn và hỗ trợ đa dạng layout của các phần tử trong danh sách.
+--------------------------------------------------------------------------------------------------------------------------------------------
+**CardView:
+-CardView là một ViewGroup,như các ViewGroup khác,CardView có thể đk sử dụng với Activity và Fragment
+-CardView làm cho các  view bo tròn nhìn đẹp hơn các ViewGroup bình thường
+-CardView thường được sử dụng chung với RecyclerView
+//example
+/***1.Add 2 thư viện này vào dependencies của  build.gradle (Module:app) để có thể sử dụng CardView và RecyclerView cho android phiên bản cũ hơn***/
+	compile 'com.android.support:cardview-v7:23.0.+'
+   compile 'com.android.support:recyclerview-v7:23.0.+'
+/***2.Sử dụng với file layou.xml***/
+ <android.support.v7.widget.CardView//thư viện hổ trợ CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            >
+            <ImageView
+                android:src="@drawable/test"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/person_photo"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="16dp"
+                />
+            <TextView
+                android:text="Khang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/person_name"
+                android:layout_toRightOf="@+id/person_photo"
+                android:layout_alignParentTop="true"
+                android:textSize="30sp"
+                />
+            <TextView
+                android:text="19 years old"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/person_age"
+                android:layout_toRightOf="@+id/person_photo"
+                android:layout_below="@+id/person_name"
+                />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+---------------------------------------------------------------------------------------------------------------------------------------
+**RECYCLERVIEW VS CARDVIEW:
 
+/**1.Tạo class Person.java chứa dữ liệu của đối tượng Person**/
+public class Person {
+    String name;
+    String age;
+    int photoId;
+    Person(String name, String age, int photoId) {
+        this.name = name;
+        this.age = age;
+        this.photoId = photoId;
+    }
+    
+}
+/**2.Tạo giao diện cho layout chính dùng để chứa RecyclerView(content_main.xml)**/
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_main" tools:context=".MainActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv"
+        />
+</LinearLayout>
+
+/**3.Tạo giao diện cho mỗi dòng dữ liệu dùng CardView(cardview.xml)**/
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/person_photo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/emma" />
+
+            <TextView
+                android:id="@+id/person_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/person_photo"
+                android:text="Khang"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/person_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/person_name"
+                android:layout_toRightOf="@+id/person_photo"
+                android:text="19 years old" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>
+
+/**4.Tạo class RVAdapter.java extend từ RecyclerView.Adapter dùng để Custom chon RecyclerView**/
+public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder>{
+    List<Person> persons;
+    RVAdapter(List<Person> persons){//hàm khởi tạo mặc định của RVAdapter 
+        this.persons = persons;
+    }
+    @Override//hàm tạo giao diện cho 1 dòng dữ liệu person
+    public PersonViewHolder onCreateViewHolder(ViewGroup viewGroup, final int i) {
+        final View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cardview, viewGroup, false);
+        final PersonViewHolder pvh = new PersonViewHolder(view);
+        return pvh;
+    }
+
+    @Override//gán dữ liệu cho dòng dữ liệu person bằng cách lấy dữ liệu của đối tượng person
+    public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
+        personViewHolder.person_name.setText(persons.get(i).name);
+        personViewHolder.person_age.setText(persons.get(i).age);
+        personViewHolder.photo_person.setImageResource(persons.get(i).photoId);
+    }
+
+    @Override
+    public int getItemCount() {//đếm item
+        return persons.size();
+    }
+
+    public static class PersonViewHolder  extends RecyclerView.ViewHolder{
+        CardView cv;
+        TextView person_name;
+        TextView person_age;
+        ImageView photo_person;
+        public PersonViewHolder(final View itemView) {
+            super(itemView);
+            cv=(CardView)itemView.findViewById(R.id.cv);
+            person_name=(TextView)itemView.findViewById(R.id.person_name);
+            person_age=(TextView)itemView.findViewById(R.id.person_age);
+            photo_person=(ImageView)itemView.findViewById(R.id.person_photo);
+            itemView.setOnClickListener(new View.OnClickListener() {//sự kiện click
+
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();//lấy vị trí của mỗi dòng person
+                   Toast.makeText(v.getContext(),person_age.getText(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+}
+
+/**5.Tạo file MainActivity.java**/
+	
+	//khai báo biến toàn cục
+	RecyclerView rv;
+	//hàm onCreate()
+        rv=(RecyclerView)findViewById(R.id.rv);
+        //cố định size RecyclerView
+        rv.setHasFixedSize(true);
+        //LinearLayoutManager làm cho RecyclerView trở thành ListView
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getApplicationContext());
+        rv.setLayoutManager(linearLayoutManager);
+        ArrayList<Person>arrPerson=new ArrayList<Person>();
+        Person p=new Person("Emma Wilson", "23 years old", R.drawable.emma);
+        Person p1=new Person("Lavery Maiss", "25 years old", R.drawable.lavery);
+        arrPerson.add(p);
+        arrPerson.add(p1);
+        RVAdapter adapter = new RVAdapter(arrPerson);
+        rv.setAdapter(adapter);
+----------------------------------------------------------------------------------------------------------------------------------------
 ***Debug android without usb,over wifi:debug ứng dung android không cần cable mà chỉ cần qua trạm phát wifi:
 //Bước 1
 -Tạo điểm phát wifi từ điện điện thoại (cách tạo tùy vào từng loại máy)
@@ -8,8 +210,7 @@
 -Kết nối máy tính với trạm wifi vừa tạo
 
 //Bước 3
-Vào cmd,gõ lệnh:ipconfig
-=>tìm địa chỉ ip của trạm phát nằm ở mục:Default Gateway
+=>tìm địa chỉ ip của điện thoại phát wifi
 
 //Bước 4
 -Tạo file runWifi.bat(tên đặt tùy ý) vào thư mục C:\Users\Administrator\AppData\Local\Android\sdk\platform-tools
@@ -112,7 +313,7 @@ pause //ngừng lại để xem
   String sdcardPath = Environment.getExternalStorageDirectory().getPath() + separator;
  Toast.makeText(MainActivity.this,sdcardPath,Toast.LENGTH_LONG).show();
 ----------------------------------------------------------------------------------------------------------------------------------------------
-**Turnon/Turnoff camera flashlight:
+**TURNON/TURNOFF CAMERA FLASHLIGHT:
 //Khai báo biến toàn cục
   private  Camera camera=null;
   private  boolean isFlashlightOn;
@@ -127,6 +328,7 @@ pause //ngừng lại để xem
            camera=Camera.open();
             parameters=camera.getParameters();
         }
+		
 //ở hàm onStop()
  @Override
     protected void onStop() { //tránh tình trạng crash app
@@ -136,6 +338,7 @@ pause //ngừng lại để xem
             camera.release();
         }
 }
+
 //turn on
  public  void setFlashlightOn(){
        parameters=camera.getParameters();
@@ -144,6 +347,7 @@ pause //ngừng lại để xem
        camera.startPreview();
        isFlashlightOn=true;
    }
+   
  //turn off
     public  void setFlashlightOff(){
         parameters=camera.getParameters();
@@ -152,6 +356,7 @@ pause //ngừng lại để xem
         camera.stopPreview();
         isFlashlightOn=false;
     }
+	
 //event click
   public void Turnon(View v) {
             setFlashlightOn();
@@ -159,6 +364,93 @@ pause //ngừng lại để xem
  public  void Turnoff(View v){
         setFlashlightOff();
   }
+  
+ //thêm vào AndroidMaintifest.xml
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+ 
+-----------------------------------------------------------------------------------------------------------------------------------------
+**KIỂM TRA XEM DEVICE CÓ SUPPORT CAMERA HAY KHÔNG:
+//biến kiểu boolean
+boolean isCameraFlash=getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+        if(!isCameraFlash){
+            showToast("Device hasn't camera flash");
+        }
+
+-------------------------------------------------------------------------------------------------------------------------------------------		
+**DEMO BLINK FLASHLIGHT VỚI SERVICE VÀ BROADCASTRECEIVER :LÀM CHO ĐÈN FLASH NHÁY LIÊN TỤC KHI BẮT ĐK BROADCASTRECEIVER VÀ SERVICE SẼ XỬ LÍ
+
+//class SmsService.java extends từ Service
+public class SmsService extends Service {
+    private  Camera camera=null;
+    private  boolean isFlashlightOn;
+    Parameters parameters;
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        String myString = "0101010101010101";
+        long blinkDelay=50;
+        camera=Camera.open();
+        for (int i = 0; i < myString.length(); i++) {
+            if (myString.charAt(i) == '0') {
+              setFlashlightOn
+            } else {
+              setFlashlightOff
+            }
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+        super.onStart(intent, startId);
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+        super.onDestroy();
+    }
+
+    public  void setFlashlightOn(){
+        parameters=camera.getParameters();
+        parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
+        camera.setParameters(parameters);
+        camera.startPreview();
+    }
+    public  void setFlashlightOff(){
+        parameters=camera.getParameters();
+        parameters.setFlashMode(Parameters.FLASH_MODE_OFF);
+        camera.setParameters(parameters);
+        camera.stopPreview();
+    }
+}
+ //add AndroidMaintifest.xml
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+
 -------------------------------------------------------------------------------------------------------------------------------------
 **https://github.com/wasabeef/awesome-android-ui //UI ANDROID
 ----------------------------------------------------------------------------------------------------------------------------------
@@ -269,7 +561,49 @@ public void hideKeyboard(){
 				android:layout_gravity="center"//TextView sẽ nằm ở giữa so với bên ngoài
 			  // android:layout_gravity="center|left"				
                 android:layout_height="wrap_content" />
-----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------
+**Padding:dùng để điều chỉnh khỏang cách của nội dung bên trong của 1 view hoặc ViewGroup so với chỉnh nó(View hoặc ViewGroup)
+//example
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+	android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+   <Button
+       android:text="Button 1"
+       android:paddingLeft="70dp"//nội dung text sẽ thụt về bên phải 70dp
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content" />
+</LinearLayout>
+
+**Note:nếu các thuộc tính paddingLeft,paddingRight,paddingBottom,paddingTop giống nhau thì có thể gôm lại thành thuộc tính padding
+//example
+ <Button
+       android:text="Button 1"
+      /* android:paddingLeft="70dp"
+	   android:paddingRight="70dp"
+	   android:paddingTop="70dp"
+	   android:paddingBottom="70dp"
+	   */
+	   android:padding="70dp"//gôm chung lại
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content" />
+-------------------------------------------------------------------------------------------------------------------------------------
+**Margin:điều chỉnh khoảng cách của 1 view hoặc ViewGroup so với layout bên ngoài
+//example
+ <Button
+        android:layout_marginTop="50dp"//Button sẽ cách phía trên 50dp
+        android:text="Button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+		
+**note:nếu layout_marginTop,layout_marginRight,layout_marginLeft,layout_marginBottom đều giống  nhau thì ta có thể gôm nhóm lại thành layout_margin
+
+**note:có thể kết hợp margin vs padding
+--------------------------------------------------------------------------------------------------------------------------------------
 
 ***Get Phone number:
 //Khai báo trong AndroidMaintifest.xml
@@ -2513,7 +2847,7 @@ Integer s_fix=Integer.parseInt(s);//kết quả sẽ là một số nguyên
 		}	
 	}
 ----------------------------------------------------------------------------------------------------------------------------------------
-	
+**Trong Java nếu không ghi phạm vi truy xuất thì mặc định là public
 	
 	
 	

@@ -819,12 +819,15 @@ namespace Demo_List
         }
     }
 }
-
- 
- 
- 
- 
- 
+----------------------------------------------ĐỒ ÁN QUẢN LÝ HỌC SINH C#----------------------------------------------------------------------------------------
+ -Đối tượng SqlDataAdapter (Mô hình ngắt kết nối): Sử dụng các đối tượng trung gian để lưu trữ và cập nhật dữ liệu (Dataset, DataTable...).
+ Trước khi đọc hoặc cập nhật dữ liệu thì SqlDataAdapter sẽ tự mở kết nối và tự đóng kết nối khi thực hiện xong.
+-Ưu điểm: Do không duy trì kết nối nên đối với các ứng dụng trên môi trường nhiều người dùng việc truy xuất sẽ nhanh hơn. 
+Ngoài ra các tính năng như: thống kê, lọc, tìm kiếm thông qua các đối tượng trong mô hình này hỗ trợ tốt hơn.
+-Khuyết điểm: Do việc sử dụng các đối tượng trung gian để lưu trữ và cập nhật dữ liệu (Dataset, DataTable...) nên việc lập trình sẽ khó hơn 
+một chút... so với mô hình kết nối vì đòi hỏi chúng ta phải hiểu và sử dụng nhiều đối tượng hơn. 
+-DisplayMember là tên của cột của DataSource mà combobox đang sở hửu, nó là cột mà combobox muốn thể hiện ra. 
+-ValueMember cũng là tên của cột trong DataSource, nó là giá trị tương ứng với DisplayMember mà người dùng sẽ chọn.
  
  
  
