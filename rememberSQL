@@ -35,9 +35,15 @@ SELECT FirstName, LastName FROM Employees WHERE FirstName = 'John';
 SELECT FirstName, LastName FROM Employees ORDERBY FirstName //sắp xếp theo FirstName
 ------------------------------------------------------------------------------
 SELECT FirstName, LastName FROM Employees ORDERBY FirstName DESC //sắp xếp giảm dần
-
-
-
+------------------------------------------------------------------------------------
+//Thêm cột
+ALTER TABLE table_name 
+ADD column_name datatype
+------------------------------------------------------------------------------------
+//Xóa cột
+ALTER TABLE table_name 
+DROP COLUMN column_name
+--------------------------------------------------------------------------------------------
 **Thuat ngu
 -Database system Enviroment //moi truong thiet lap he thong co so du lieu
 -Database Management System(DBMS)//he quan tri co so du lieu(SQL Server,SQL Oracel)

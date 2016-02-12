@@ -1,5 +1,266 @@
 
 =========================================================ANDROID=====================================================================================
+**TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
+<View
+     android:layout_width="fill_parent"
+     android:background="#dcdcdc"
+     android:layout_height="10dp"/>
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+***SERVICE:
+//Vòng đời của startService()
+onCreate()->onStartCommand()->Service Running->onDestroy()->Service Shutdow
+//Vòng đời của bindService()
+onCreate()->onBind()->Client are bound to service->onUnbind()->onDestroy()->Service Shutdow
+----------------------------------------------------------------------------------------------------------------------------------------------------
+***MENU SEARCH SỬ DỤNG APPCOMPATV7
+
+//File main_menu.xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_search"
+        android:title="search"
+        appcompat:actionViewClass="android.support.v7.widget.SearchView"
+        appcompat:showAsAction="always" />
+</menu>
+
+//File MainActivity.java
+public class MainActivity extends AppCompatActivity {
+    android.support.v4.widget.SimpleCursorAdapter suggestionAdapter;
+    ArrayList<String>arrName;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final String[] from = new String[]{"Name"};
+        final int[] to = new int[]{android.R.id.text1};
+        suggestionAdapter = new android.support.v4.widget.SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        arrName=new ArrayList<>();
+        arrName.add("Nguyễn Hồ Duy Khang");
+        arrName.add("Nguyễn Thiện huy");
+        arrName.add("Hồ Văn Tiến");
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchManager searchManager=(SearchManager)getSystemService(Context.SEARCH_SERVICE);
+        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSuggestionsAdapter(suggestionAdapter);
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                getSuggestion(newText);
+                return true;
+            }
+        });
+        return true;
+    }
+
+    private void getSuggestion(String text) {
+        MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "Name"});
+        for(int i =0; i< arrName.size(); i++) {
+            if(arrName.get(i).toLowerCase().contains(text.toLowerCase())){
+                c.addRow(new Object[]{i, arrName.get(i)});
+            }
+        }
+        suggestionAdapter.changeCursor(c);
+    }
+}
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+**TẠO RA 1 BACKGROUND CHO 1 VIEW HOẶC VIEWGROUP THÌ CÓ THỂ TẠO TRONG DRAWABLE(file.xml)
+-----------------------------------------------------------------------------------------------------------------------------------------------
+**CẢM BIẾN TRƯỜNG GẦN(PROXIMITY)
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener {//implements từ SensorEventListener
+    SensorManager sensorManager;
+    Sensor camBienTruongGan;
+    TextView tv;
+    public  static Integer count=0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tv = (TextView) findViewById(R.id.tv);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        camBienTruongGan = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        sensorManager.registerListener(this, camBienTruongGan, SensorManager.SENSOR_DELAY_NORMAL);
+		//Kiểm tra xem thiết bị có hỗ trợ sensor hay ko
+		Boolean check= sensorManager.registerListener(this, camBienTruongGan, SensorManager.SENSOR_DELAY_NORMAL);
+
+    }
+	
+	//Sự kiện thay đổi cảm biến
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float giatri = event.values[0];
+        if (giatri == 0) {
+            count++;
+            tv.setText(""+count);
+        } else {
+           tv.setText(""+count);
+        }
+        Log.d("giatri", "" + giatri + "");
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+------------------------------------------------------------------------------------------------------------------------------------------------------
+**CẢM BIẾN ÁNH SÁNG(LIGHT)
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    SensorManager sensorManager;
+    Sensor lightSensor;
+    RelativeLayout layout;
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tv=(TextView)findViewById(R.id.tv);
+        layout=(RelativeLayout)findViewById(R.id.layout);
+        sensorManager=(SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        lightSensor=sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        if(lightSensor!=null){
+            sensorManager.registerListener(this,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else{
+            Toast.makeText(MainActivity.this,"This device doesn't support light Sensor",Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+  
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        lightSensor=event.sensor;
+       if(lightSensor.getType()==Sensor.TYPE_LIGHT){
+           if(event.values[0]>=5000){
+               layout.setBackgroundResource(R.drawable.maudo);
+           }
+
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------
+***CẢM BIẾN GIA TỐC (ACCELEROMETER)
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    SensorManager sensorManager;
+    Sensor camBienGiaToc;
+    float last_x, last_y, last_z;
+    long lastTime;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        camBienGiaToc = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (camBienGiaToc == null) {
+            Toast.makeText(this, "Device doesn't support ACCELEROMETER", Toast.LENGTH_LONG).show();
+        } else {
+            sensorManager.regsisterListener(this, camBienGiaToc, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        camBienGiaToc = event.sensor;
+        if (camBienGiaToc.getType() == Sensor.TYPE_ACCELEROMETER) {
+            Log.d("kiemtra", "tọa độ x:  " + event.values[0] + "\ntọa độ y: " + event.values[1] + "\ntọa độ z: " + event.values[2]);
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            long currentTime=System.currentTimeMillis();
+            if((currentTime-lastTime)>100){
+                long diffTime=currentTime-lastTime;
+                lastTime=currentTime;
+                float speed=Math.abs(x+y+z-last_x-last_y-last_z)/diffTime*10000;
+                if(speed>600){
+                    Toast.makeText(this, "Bạn đã lắc thiết bị", Toast.LENGTH_LONG).show();
+                }
+                last_x=x;
+                last_y=y;
+                last_z=z;
+                Log.d("kiemtra",""+speed);
+            }
+
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+**ADD HEADER VÀ FOOTER VÀO LISTVIEW:LÀM CHO LISTVIEW SCROLL MƯỢT HƠN.SCROLL ĐK CẢ 1 TRANG GIỐNG NHƯ ZING MP3 APP
+/***Tạo layout list_header.xml và list_footer.xml đại diện cho phần đầu và phần cuối của Listview***/
+/*** list_header.xml là giao diện của những item nằm trước listview.list_footer là những item nằm sau listview**/
+
+/***Tạo layout main để hiện thị listview gồm 1 listview***/
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.HomeActivity">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/list_element"
+        android:layout_height="wrap_content">
+    </ListView>
+</LinearLayout>
+
+/***MainActivity.java***/
+	View listHeader, listFooter;//biến toàn cục
+	//Hàm onCreate()
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+        listView = (ListView) findViewById(R.id.list_element);
+        offlineListElement = new ArrayList<>();
+        addElement();
+        listView.setAdapter(elementListAdapter);
+        setupHeaderAndFooter();
+    }
+	//Hàm add header và footer cho listview
+	 private void setupHeaderAndFooter() {
+        listHeader = View.inflate(this, R.layout.home_list_header, null);
+        listFooter = View.inflate(this, R.layout.home_list_footer, null);
+        listView.addHeaderView(listHeader);
+        listView.addFooterView(listFooter);
+    }
+-----------------------------------------------------------------------------------------------------------------------------------------------------
 ***RecyclerView:
 -RecyclerView là một View mới trong android giống như ListView nhưng mạnh mẽ hơn rất nhiều.
 -RecyclerView cho phép chúng ta load dữ liệu nhiều hơn ListView, vuốt mượt hơn, hiệu ứng đẹp hơn và hỗ trợ đa dạng layout của các phần tử trong danh sách.
@@ -380,7 +641,7 @@ boolean isCameraFlash=getApplicationContext().getPackageManager().hasSystemFeatu
         }
 
 -------------------------------------------------------------------------------------------------------------------------------------------		
-**DEMO BLINK FLASHLIGHT VỚI SERVICE VÀ BROADCASTRECEIVER :LÀM CHO ĐÈN FLASH NHÁY LIÊN TỤC KHI BẮT ĐK BROADCASTRECEIVER VÀ SERVICE SẼ XỬ LÍ
+**DEMO BLINK FLASHLIGHT VỚI SERVICE VÀ BROADCASTRECEIVER :LÀM CHO ĐÈN FLASH NHÁY LIÊN TỤC KHI BẮT ĐK BROADCASTRECEIVERBROADCASTRECEIVER VÀ SERVICE SẼ XỬ LÍ
 
 //class SmsService.java extends từ Service
 public class SmsService extends Service {
@@ -1510,6 +1771,194 @@ public class ConnectService extends Service {
             </intent-filter>
         </service>
 ----------------------------------------------------------------------------------------------------------------------------------------
+***BroadcastReceiver Incoming Call:
+
+//class IncomingCall.java extends BroadcastReceiver
+public class IncomingCall extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+        if(state.equals(TelephonyManager.EXTRA_STATE_RINGING))
+        {
+            Toast.makeText(context, "Phone Is Ringing", Toast.LENGTH_LONG).show();//Khi có cuộc gọi đến
+        }
+        if(state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))
+        {
+            Toast.makeText(context, "Call Recieved", Toast.LENGTH_LONG).show();//Khi nghe máy
+        }
+        if (state.equals(TelephonyManager.EXTRA_STATE_IDLE))
+        {
+            Toast.makeText(context, "Phone Is Idle", Toast.LENGTH_LONG).show();//Khi hết cuộc gọi hoặc khi nhấn nút hủy cuộc gọi
+        }
+    }
+}
+// add  AndroidMaintifest.xml
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+	 <receiver android:name="com.example.administrator.broadcastreceiver_incomingcall.IncomingCall">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+-------------------------------------------------------------------------------------------------------------------------------------------------
+**HÀM TRẢ LỜI CUỘC GỌI TỰ ĐỘNG(ĐƯỢC DÙNG VỚI BROADCASTRECEIVER):
+
+   public void answerPhoneHeadsethook(Context context, Intent intent) {
+        String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+        if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+            String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+            Intent buttonUp = new Intent(Intent.ACTION_MEDIA_BUTTON);
+            buttonUp.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HEADSETHOOK));
+            try {
+                context.sendOrderedBroadcast(buttonUp, "android.permission.CALL_PRIVILEGED");
+            }
+            catch (Exception e) {
+            }
+
+            Intent headSetUnPluggedintent = new Intent(Intent.ACTION_HEADSET_PLUG);
+            headSetUnPluggedintent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY);
+            headSetUnPluggedintent.putExtra("state", 1); // 0 = unplugged  1 = Headset with microphone 2 = Headset without microphone
+            headSetUnPluggedintent.putExtra("name", "Headset");
+            try {
+                context.sendOrderedBroadcast(headSetUnPluggedintent, null);
+            }
+            catch (Exception e) {
+            }
+        }
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------
+**HÀM HỦY CUỘC GỌI(ĐƯỢC DÙNG VỚI BROADCASTRECEIVER)
+
+  public void disconnectCall(){
+        try {
+
+            String serviceManagerName = "android.os.ServiceManager";
+            String serviceManagerNativeName = "android.os.ServiceManagerNative";
+            String telephonyName = "com.android.internal.telephony.ITelephony";
+            Class<?> telephonyClass;
+            Class<?> telephonyStubClass;
+            Class<?> serviceManagerClass;
+            Class<?> serviceManagerNativeClass;
+            Method telephonyEndCall;
+            Object telephonyObject;
+            Object serviceManagerObject;
+            telephonyClass = Class.forName(telephonyName);
+            telephonyStubClass = telephonyClass.getClasses()[0];
+            serviceManagerClass = Class.forName(serviceManagerName);
+            serviceManagerNativeClass = Class.forName(serviceManagerNativeName);
+            Method getService = // getDefaults[29];
+                    serviceManagerClass.getMethod("getService", String.class);
+            Method tempInterfaceMethod = serviceManagerNativeClass.getMethod("asInterface", IBinder.class);
+            Binder tmpBinder = new Binder();
+            tmpBinder.attachInterface(null, "fake");
+            serviceManagerObject = tempInterfaceMethod.invoke(null, tmpBinder);
+            IBinder retbinder = (IBinder) getService.invoke(serviceManagerObject, "phone");
+            Method serviceMethod = telephonyStubClass.getMethod("asInterface", IBinder.class);
+            telephonyObject = serviceMethod.invoke(null, retbinder);
+            telephonyEndCall = telephonyClass.getMethod("endCall");
+            telephonyEndCall.invoke(telephonyObject);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+**BROADCASTRECEIVER SCREEN ON/SCREEN OFF:
+
+/*MainActivity.java hàm onCreate()*/
+ startService(new Intent(this,ScreenOffService.class));
+ 
+ /*MyBroadcastReceiver.java extends BroadcastReceiver*/
+ public class MyBroadcastReceiver extends BroadcastReceiver {
+    private boolean screenOff;
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        //Toast.makeText(context, "BroadcastReceiver", Toast.LENGTH_SHORT).show();
+        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+
+            screenOff = true;
+
+        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+
+            screenOff = false;
+
+        }
+
+        // Toast.makeText(context, "BroadcastReceiver :"+screenOff, Toast.LENGTH_SHORT).show();
+
+        // Send Current screen ON/OFF value to service
+        Intent i = new Intent(context, ScreenOffService.class);
+        i.putExtra("screen_state", screenOff);
+        context.startService(i);
+    }
+}
+/*ScreenOffService extend Service*/
+ublic class ScreenOffService extends Service {
+    BroadcastReceiver mReceiver=null;
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+    @Override
+    public void onCreate() {
+        // Toast.makeText(getBaseContext(), "Service on create", Toast.LENGTH_SHORT).show();
+
+        // Register receiver that handles screen on and screen off logic
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        mReceiver = new MyBroadcastReceiver();
+        registerReceiver(mReceiver, filter);
+        Log.d("check","onCreate");
+        super.onCreate();
+    }
+    @Override
+    public void onStart(Intent intent, int startId) {
+        boolean screenOn = false;
+        Log.d("check","onStart");
+
+        try{
+            screenOn = intent.getBooleanExtra("screen_state", false);
+
+        }catch(Exception e){}
+
+        if (!screenOn) {
+            Toast.makeText(getBaseContext(), "Screen on, ", Toast.LENGTH_SHORT).show();
+            Log.d("check", "Screen on");
+
+
+        } else {
+            Toast.makeText(getBaseContext(), "Screen off,", Toast.LENGTH_SHORT).show();
+            Log.d("check","Screen off");
+        }
+        super.onStart(intent, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("check","onDestroy");
+        Log.i("ScreenOnOff", "Service  distroy");
+        if(mReceiver!=null)
+            unregisterReceiver(mReceiver);
+        super.onDestroy();
+    }
+}
+/*Add on AndroidMaintifest.xml */
+ <receiver android:name="musicapp.khangit.broadcastreceiver_screenoff.MyBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.SCREEN_OFF"/>
+                <action android:name="android.intent.action.SCREEN_ON"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".ScreenOffService">
+            <intent-filter>
+                <action android:name="com.androidexample.screenonoff.AEScreenOnOffService" />
+            </intent-filter>
+        </service>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**SỬ DỤNG CONTEXT Ở SERVICE CLASS OR ACTIVITY CLASS:
+Context context = this;
+------------------------------------------------------------------------------------------------------------------------------------------------
 **Kiểm tra đối tượng có tồn tại trong ArrayList hay ko:
  ArrayList<String> arrlist=new ArrayList<String>();
  if(arrlist.contain("khang")){// điều kiện này là có tồn tại
@@ -1686,7 +2135,7 @@ public void Click(View v){
          adapter.notifyDataSetChanged();
 		
 			
-------------------------------------------------------------------------------						
+-----------------------------------------------------------------------------------------------------------------------------						
 			
 *SIZEARRAYLIST:
 	arr.size();
@@ -1870,7 +2319,26 @@ public void Click(View v){
             img.setImageBitmap(bmp);
         }
     }
-------------------------------------------------------------------------------		
+-----------------------------------------------------------------------------------------------------------------------------------------
+//Chức năng của Intent
+-Để launch một Activity dùng phương thức startActivity()
+-Để gửi/phát một thông điệp broadcast đến các đối tượng BroadcastReceiver đăng ký nhận thông qua hàm broadcastIntent()
+-Để start hoặc giao tiếp với một service chạy ở background bằng các phương thức sau: 
+startService(Intent) / bindService(Intent, ServiceConnection, int)
+
+//Phân loại Intent
+Tùy vào mục đích sử dụng, chúng ta sẽ phận Intent thành 2 loại:Explicit intents và Implicit intents
+
+//Explicit intents
+-Là những intent đã chỉ rõ thành phần sẽ nhận và xử lý.
+-Thông thường những intent này sẽ không cần gán bổ sung thêm các thuộc tính khác như action, data. 
+-Explicit Intent thường được sử dụng để khởi chạy các activity, hoặc service trong cùng 1 ứng dụng
+
+//Implicit intents 
+  -Là các intent không chỉ rõ component xử lý, nhưng intent sẽ được gán bổ sung thông tin trong các thuộc tính. 
+ -Hệ thống sẽ dựa vào những thông tin được trong intent được gửi đi này để quyết định component nào thích hợp nhất để xử lý nó.
+ -Những implicit intent thường được dùng để kích hoạt các component bên trong ứng dụng khác
+------------------------------------------------------------------------------------------------------------------------------------------		
 *INTENT:
 		 bt=(Button)findViewById(R.id.bt);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -1881,7 +2349,7 @@ public void Click(View v){
             }
         });
 		
-------------------------------------------------------------------------------				
+--------------------------------------------------------------------------------------------------------------------------------------------				
 *INTENT CÓ TRUYỀN THAM SỐ(PutExtra):
 		// ở màn hình gửi
 		 bt=(Button)findViewById(R.id.bt);
@@ -2218,8 +2686,118 @@ public void Click(View v){
 }
 //ListAdapter là file class ListAdapter.java
 ListAdapter customAdapter = new ListAdapter(this, R.layout.activity_list_adapter, mang);
+---------------------------------------------------------------------------------------------------------------------------------------------
+**CUSTOM LISTVIEW EXTENDS TỪ BASEADAPTER
 
-------------------------------------------------------------------------------				
+/*** Tạo AnimalListAdpater extends từ BaseAdapter là class dùng để custom Listview ***/
+public class AnimalListAdpater extends BaseAdapter {
+    List<Animal> list;//list
+    private Context context;
+
+    public AnimalListAdpater(Context context, List<Animal> list) {
+        this.context = context;
+        this.list = list;
+    }
+
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return list.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {//đổ giao diện cho dòng item
+        TextView tvName,tvColor;
+        convertView=View.inflate(context,R.layout.list_item,null);
+        tvName=(TextView)convertView.findViewById(R.id.tvName);
+        tvColor=(TextView)convertView.findViewById(R.id.tvColor);
+        tvName.setText(list.get(position).getName().toString());
+        tvColor.setText(list.get(position).getColor().toString());
+        return convertView;
+    }
+}
+/*** Tạo class Animal.java là đối tượng cần thể hiện trên listview***/
+public class Animal {
+    public Animal(Context context,String name, String color) {
+        this.setName(name);
+        this.setColor(color);
+        this.context=context;
+    }
+}
+/*** Tạo file list_item.xml dùng để tạo giao diện cho mỗi dòng item***/
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+  <TextView
+      android:text="Dog"
+      android:id="@+id/tvName"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+    <TextView
+        android:text="Black"
+        android:id="@+id/tvColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+/*** Tạo file MainActivity.java***/
+//Khai báo biến toàn cục
+ListView lv;
+AnimalListAdpater animalListAdpater;
+ArrayList<Animal> arrayList=new ArrayList<>();
+//Hàm onCreate()
+ lv=(ListView)findViewById(R.id.lv);
+        arrayList.add(new Animal(this,"Dog","Black"));
+        arrayList.add(new Animal(this,"Dog","White"));
+        animalListAdpater=new AnimalListAdpater(this,arrayList);
+        lv.setAdapter(animalListAdpater);
+       lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Toast.makeText(MainActivity.this,arrayList.get(position).getColor(),Toast.LENGTH_LONG).show();
+           }
+       });
+-----------------------------------------------------------------------------------------------------------------------------------------
+*abstract java
+//Base class
+public class Animal{
+        private  String name;
+        private  String color;
+        public Context context;
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+}
+//Class Dog.java extends From Animal Base class
+public class Dog extends Animal {
+    public Dog(Context context,String name, String color) {
+        this.setName(name);
+        this.setColor(color);
+        this.context=context;
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------				
 	
 *DÙNG PICASO ĐỂ LOAD HÌNH:
 	-dowload thư viện về và add vào library:http://square.github.io/picasso/;
