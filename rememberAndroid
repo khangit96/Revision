@@ -6,12 +6,177 @@
      android:background="#dcdcdc"
      android:layout_height="10dp"/>
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-***SERVICE:
-//Vòng đời của startService()
-onCreate()->onStartCommand()->Service Running->onDestroy()->Service Shutdow
-//Vòng đời của bindService()
-onCreate()->onBind()->Client are bound to service->onUnbind()->onDestroy()->Service Shutdow
-----------------------------------------------------------------------------------------------------------------------------------------------------
+***SERVICE:LÀ MỘT THÀNH PHẦN CỦA ỨNG DỤNG CÓ THỂ THỰC CÔNG VIỆC MÀ KHÔNG CẦN GIAO DIỆN NGƯỜI DÙNG.
+-Service có 2 dạng:startService() và bindService()
+//startService()
+startService() : là một dạng service có thể chạy ngầm vô thời hạn, ngay
+cả khi thành phần bắt đầu bị hủy. Thông thường startService() được
+dùng để thực hiện một số thao tác đơn lẽ và không có kết quả trả về.
+
+//bindService()
+ bindService(): Là một dạng service theo mô hình Client – Service . Cho
+phép các thành phần gọi các hàm của Service và nhận được kết quả trả
+về của hàm đó.
+
+-Các cách tạo Service:có 2 cách tạo service là extends từ Service và extends từ IntentService
+ +Service : Là Class cơ bản cho tất cả các Service. Khi kế thừa Class này
+chúng ta cần phải tạo ra một luồng để thực hiện tất cả các công việc của
+Service
++ IntentService : Là Class con của Service có chức năng sử dụng một
+luồng để sử lý tất cả các công việc một cách tuần tự, bằng cách override
+lại phương thức onHandIntent()
+
+-Class IntentService
+• Phần lớn các yêu cầu gữi lên Service thường không cần xử lý đồng thời. Vì vậy tốt
+nhất nên sử dụng IntentService thay vì Service.
+• IntentService sẽ thực hiện xử lý sau :
+• - Tạo một luồng thực hiện các yêu cầu được chuyển tới phương thức
+onStartCommand().
+• - Tạo ra một hàng đợi công việc để chuyển lần lượt các yêu cầu tới phương thức
+onHandIntent().
+• - Sẽ tự động dừng Service khi các công việc trong hàng đơi kết thúc.
+• - Mặc định onBind() sẽ trả về rỗng.
+• - Mặc định onStartCommand() sẽ gữi yêu cầu tới hàng đợi của onHandleIntent()
+
+-Class Service
+• Khác với IntentService , Service cho ph
+xử lý nhiều công việc cùng một lúc.
+
+-Hằng số trả về của onStartCommand()
+• - START_NOT_STICKY : Service sẽ không được tạo lại. Servic
+tạo lại nếu ở runtime gọi startService().
+• - START_STICKY : Service sẽ được tạo lại nếu như hệ thống
+Service. Tất cả các dữ liệu chuyển tới onStartCommand() sẽ
+sử dụng để quản lý các trạng thái của Service và không phụ
+dữ liệu của Intent.
+• - START_REDELIVER_INTENT : Giống như START_STICKY như
+ban đầu sẽ được gữi lại cho onStartCommand().
+
+-Các phương thức được triển khai khi tạo một Service: 
+• -startService(Intent Service): start một Service dạng Unbounded Service.
+• -onCreate(): được gọi khi Service đươc tạo lần đầu.
+• -onStartCommand(Intent intent, int flags, int startId): được gọi khi Service đã start.
+• -onBind(Intent intent): phương thức này phải được gọi nếu bạn muốn liên kết với Activity.
+• -onUnbind(Intent intent): được gọi khi Service hủy liên kết tới Activity.
+• -onRebind(Intent intent): gọi khi muốn liên kết lại sau khi onUnbind().
+• -onDestroy(): gọi khi Service bị hủy
+
+-Sử dụng service:
+• -Dùng trong các ứng dụng nghe nhạc.
+• -Dùng để xử lý các thao tác mất thời gian và không nhất thiết phải hiển thị lên activity (download,upload…)
+• -Đôi khi cần một ứng dụng vận hành liên tục để xử lý những việc mong muốn mà không làm phiền người dùng.
+• -Làm những thao tác tính toán, xử lý đều đặn nào đó và kết quả khi nào người dùng cần thì mới xem.
+
+//Extends từ Service :thực hiện mãi mãi nếu ko có sự can thiệp thì nó sẽ ko hủy ví dụ như quá trình chơi nhạc (nếu như extends từ Service để download file thì sau khi thực hiện download xong thì service vẫn chạy->gây tốn ram)
+	  /**Note:Hàm onStartCommand()**/
+	  @Override
+		public int onStartCommand(Intent intent, int flags, int startId) {
+			mediaPlayer=MediaPlayer.create(this,R.raw.muadongkoem);
+			mediaPlayer.start();
+			Toast.makeText(getApplicationContext(),"Service is running",Toast.LENGTH_LONG).show();
+			return START_NOT_STICKY;//dùng START_NOT_STICKY là để cho service ko restart lại nếu đóng chạy ngầm thì sẽ đóng luôn .
+		}
+
+		
+//EXTENDS TỪ INTENTSERVICE:THỰC HIỆN TUẦN TỰ,SAU KHI THỰC HIỆN XONG THÌ NÓ SẼ TỰ HỦY(VÍ DỤ QUÁ TRÌNH DOWNLOAD FILE SAU KHI DOWNLOAD XONG THÌ SẼ TƯ HỦY) TIẾT KIỆM BỘ NHỚ RAM.
+    /**Class IntentService.java extends IntentService**/
+	public class DemoIntentService extends IntentService {
+		/**
+		 * Creates an IntentService.  Invoked by your subclass's constructor.
+		 *
+		 * @param name Used to name the worker thread, important only for debugging.
+		 */
+		public IntentService() {
+			super("My Intent Service");
+		}
+
+		@Override
+		protected void onHandleIntent(Intent intent) {//Hàm chính thực hiện 
+			synchronized (this) {
+				for (int i = 0; i < 10; i++) {
+					Log.d("Test", "" + i);
+					try {
+						wait(10000);
+					} catch (Exception e) {
+
+					}
+
+				}
+			}
+		}
+
+		@Override
+		public void onDestroy() {//Sau khi thực hiện onHandleIntent thì sẽ chạy tới hàm này để hủy service
+			Toast.makeText(getApplicationContext(),"Service is Stopped",Toast.LENGTH_LONG).show();
+			super.onDestroy();
+		}
+	}
+	/**Thực hiện IntentService với BroadcastReceiver hay thực hiện bình thường đều dùng tương tự như class DemoIntentService ở trên**/
+	
+//VÒNG ĐỜI CỦA STARTSERVICE()
+	onCreate()->onStartCommand()->Service Running->onDestroy()->Service Shutdow
+
+//VÒNG ĐỜI CỦA BINDSERVICE()
+    onCreate()->onBind()->Client are bound to service->onUnbind()->onDestroy()->Service Shutdow
+	
+//BOUNDSERVICE:LÀ SERVICE THỰC HIỆN THEO MÔ HÌNH CLIENT-SERVER,CHO PHÉP NGƯỜI DÙNG TRUY XUẤT DỮ LIỆU TỪ SERVICE THÔNG QUA GIAO DIỆN(VÍ DỤ NHƯ CÓ NHIỀU ACTIVITY CÙNG DÙNG CHUNG MỘT PHƯƠNG  THỨC NÀO ĐÓ CỦA SERVICE THÌ TA NÊN DÙNG BOUNDSERVICE)
+			/**Class BoundService.java extends Service  đóng vai trò là server**/
+		public class BoundService extends Service {
+			IBinder iBinder=new LocalBinder();//liên kết đến client
+			@Nullable
+			@Override
+			public IBinder onBind(Intent intent) {
+				return null;
+			}
+			public class LocalBinder extends Binder{
+				LocalBinder getLocalBinder(){
+					return LocalBinder.this;//Phương thức khởi tạo khi client gọi tới các phương thức của service
+				}
+			}
+			public String show(){//phương của client cần truy xuất lấy dữ liệu
+				return "I am coder";
+			}
+		}
+		/**Class MainActivity.java  đóng vai trò là client truy xuất server thông qua giao diện**/
+		public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+			Button btGet;
+			BoundService service;
+
+			@Override
+			protected void onCreate(Bundle savedInstanceState) {
+				super.onCreate(savedInstanceState);
+				setContentView(R.layout.activity_main);
+				btGet = (Button) findViewById(R.id.btGet);
+				btGet.setOnClickListener(this);
+				//Khởi tạo đối tượng Service
+				service=new BoundService();
+				//Khi ứng dụng vùa chạy lên thì sẽ kết nối đến service
+				Intent intent = new Intent(MainActivity.this, BoundService.class);
+				bindService(intent, mserviceConnection, BIND_AUTO_CREATE);//kết nối đến service
+			   
+			}
+			 //Tạo ra phương thức connection
+			ServiceConnection mserviceConnection = new ServiceConnection() {
+				@Override
+				public void onServiceConnected(ComponentName name, IBinder service) {//phương thức kết nối
+					BoundService.LocalBinder localBinder = (BoundService.LocalBinder) service;
+				}
+
+				@Override
+				public void onServiceDisconnected(ComponentName name) {
+
+				}
+			};
+
+			@Override
+			public void onClick(View v) {
+				String test =service.show();
+				Toast.makeText(MainActivity.this,test,Toast.LENGTH_LONG).show();
+			}
+		}
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***MENU SEARCH SỬ DỤNG APPCOMPATV7
 
 //File main_menu.xml
@@ -54,21 +219,38 @@ public class MainActivity extends AppCompatActivity {
         android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setSuggestionsAdapter(suggestionAdapter);
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(String query) {//Khi nhấn Enter
+                //  Toast.makeText(MainActivity.this,"Your clicked: "+query,Toast.LENGTH_LONG).show();
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String newText) {//Khi người dùng nhập vào khung search
                 getSuggestion(newText);
+                //  Toast.makeText(MainActivity.this,"Your clicked: "+newText,Toast.LENGTH_LONG).show();
                 return true;
             }
         });
+        //Lắng nghe thông tin mà người dùng Search
+      searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+          @Override
+
+          public boolean onSuggestionSelect(int position) {
+              Toast.makeText(MainActivity.this,"Posdition: "+""+position,Toast.LENGTH_LONG).show();
+              return false;
+          }
+          //Khi click thông tin mà người dùng search
+          @Override
+          public boolean onSuggestionClick(int position) {
+              Toast.makeText(MainActivity.this,"Position: "+""+position,Toast.LENGTH_LONG).show();
+              return false;
+          }
+      });
         return true;
     }
-
+  //Hàm lấy ra những thông tin mà người dùng search
     private void getSuggestion(String text) {
         MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "Name"});
         for(int i =0; i< arrName.size(); i++) {
@@ -2584,45 +2766,39 @@ Tùy vào mục đích sử dụng, chúng ta sẽ phận Intent thành 2 loại
         stopService(new Intent(MainActivity.this,Play.class));
     }
 	
-	//class Play.java extend Service
-	   MediaPlayer mediaPlayer;//khai báo biến toàn cục
-	   @Override
-	  public void onCreate() {
-        mediaPlayer = new MediaPlayer();
-    }
-	 public void PlayNhacMp3(String url){
-        //url = "http://khoapham.vn/KhoaPhamTraining/laptrinhios/EmCuaNgayHomQua.mp3";
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mp.start();
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+	//class MusicService.java extend Service
+	  public class MusicService extends Service {
+    MediaPlayer mediaPlayer;
+    @Override
+    public void onCreate() {//phương thức chạy đầu tiên
+        super.onCreate();
     }
 
-	  @Override
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {//phương thức chạy thứ 2
+        mediaPlayer=MediaPlayer.create(this,R.raw.muadongkoem);
+        mediaPlayer.start();
+        Toast.makeText(getApplicationContext(),"Service is running",Toast.LENGTH_LONG).show();
+
+        return START_NOT_STICKY;// START_NOT_STICKY không cho service restart lại sẽ tắt luôn nếu đóng chạy ngầm
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
     public void onDestroy() {
-        super.onDestroy();
         mediaPlayer.stop();
+        Toast.makeText(getApplicationContext(),"Service is stopped!",Toast.LENGTH_LONG).show();
+        super.onDestroy();
     }
-	 @Override
-    public void onStart(Intent intent, int startId) {
-        Bundle bd=intent.getExtras();
-        if(bd!=null){
-            String url=bd.getString("url");
-            PlayNhacMp3(url);
-        }
-    }
+}
+
 	//Note:Nhớ cấu hình trong AndroidManifest.xml;
-	<service android:name=".MediaPlayerService"/>
+	<service android:name=".MusicService"/>
    
 
 
@@ -3424,8 +3600,21 @@ Integer s_fix=Integer.parseInt(s);//kết quả sẽ là một số nguyên
 		
 		}	
 	}
-----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 **Trong Java nếu không ghi phạm vi truy xuất thì mặc định là public
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+==================================================SOME ANDROID APP DEVELOPMENT IDEAS========================================================
+-Ứng dụng đọc trộm tin nhắn
+-Ứng dụng dự báo thời tiết
+-Ứng dụng đọc báo
+-Ứng dụng chặn cuộc gọi/sms
+-Ứng dụng flash light
+-Ứng dụng blink flash light khi có cuộc gọi tin nhắn đến
+-Ứng dụng trả lời cuộc gọi tự động khi đưa gần lỗ tai và hủy khi đưa ra xa lỗ tai
+-Ứng dụng nghe nhạc
+-Ứng dụng download
+-Ứng dụng note
+-Ứng dụng reminder
 	
 	
 	
