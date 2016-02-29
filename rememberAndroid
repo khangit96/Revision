@@ -6,6 +6,38 @@
      android:background="#dcdcdc"
      android:layout_height="10dp"/>
 -------------------------------------------------------------------------------------------------------------------------------------------------------
+***ImageButton
+
+//set image cho ImageButton bằng src
+
+  /**1.Set bằng thư mục drawable**/
+    android:src="@drawable/facebook"
+	
+/**2.Set bằng thư mục raw**/
+ android:src="@raw/facebook"
+
+//set bằng java code
+
+	/**1.Set bằng thư mục drawable**/
+		imgButton.setImageResource(R.drawable.facebook);
+		
+	/**2.Set bằng thư mục raw:sử dụng bitmap**/
+		InputStream inputStream=getResources().openRawResource(R.raw.facebook);
+        Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+        imgButton.setImageBitmap(bitmap);
+		
+	/**2.Set bằng thư mục asset:sử dụng bitmap**/
+		InputStream inputStream= null;
+			try {
+				inputStream = this.getAssets().open("facebook.png");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+			imgButton.setImageBitmap(bitmap);
+		
+**Note:khi set image bằng bitmap với thư mục raw và asset thì chất lượng hình ảnh mịn hơn và vưa kích thước hơn
+-------------------------------------------------------------------------------------------------------------------------------------------------------
 ***SERVICE:LÀ MỘT THÀNH PHẦN CỦA ỨNG DỤNG CÓ THỂ THỰC CÔNG VIỆC MÀ KHÔNG CẦN GIAO DIỆN NGƯỜI DÙNG.
 -Service có 2 dạng:startService() và bindService()
 //startService()
@@ -174,7 +206,6 @@ ban đầu sẽ được gữi lại cho onStartCommand().
 				Toast.makeText(MainActivity.this,test,Toast.LENGTH_LONG).show();
 			}
 		}
-
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***MENU SEARCH SỬ DỤNG APPCOMPATV7
@@ -2501,7 +2532,108 @@ public void Click(View v){
             img.setImageBitmap(bmp);
         }
     }
------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+**INTENT:
+-Khái niệm
+• Intent là một đối tượng dùng để gữi một thông điệp nào đó . Các thông điệp g
+có thể là mở một Activity khác, gọi đến một BroadCast, hoặc giao tiếp với Serv
+• - Mở một Activity khác : Để mở một Activity khác bằng Intent chúng ta sử dụng
+phương thức startActivity() hoặc startActivityForResult() để nhận kết quả trả v
+một Activity khác.
+• - Mở một service : Service được biết tới như là một component chạy ngầm ở
+background mà không cần giao diện người dùng. Để mở một service chúng ta
+dụng startService(). Nếu như service được thiết kế dưới dạng client-server , ch
+có thể liên kết qua một service khác thông qua bindService()
+• - Giao tiếp với Broadcast : là nơi bắt những thông điệp bên ngoài mà app có th
+nhận được. Để mở một Broadcast bằng Intent qua phương thức sendBroadcas
+sendOtherBroadcast(), sendStickyBroadcast().
+
+-Phân loại Intent
+• Explicit Intent (Intent tường minh): chỉ định component bắt đầu bằng name ( tên class ). Thường được sử dụng để mở một Activity
+khác trong ứng dụng.
+• Implicit intents ( intent ngầm ):
+không cần khai báo tên
+component, nhưng thay vào đó
+sẽ gọi những action có sẵn để
+một ứng dụng khác xử lý dữ liệu.
+
+-Xây dựng Intent
+• Các nội dung chính trong một intent.
+• - Component Name: Tên của component bắt đầu.
+• - Action : Là một chuỗi chỉ định các hành động như xem hoặc chọn. Một
+số các hành động như :
+• * ACTION_VIEW : sử dụng trong intent cùng với startActivity()
+• * ACTION_SEND : được biết như là một intent “share” và cũng được sử
+dụng cùng với startActivity()
+• Để chỉ định action cho intent chúng ta sử dụng thuộc tính setAction()
+• - Data : URI tham chiếu tới loại dữ liệu cần lấy hoặc dữ liệu loại MIME .
+Loại dữ liệu được cung cấp sẽ được quyết định bởi URI này.
+• * Để chỉ định dữ liệu URI sử dụng phương thức setData(), để đặt dữ
+liệu dạng MIME sử dụng phương thức setType(), hoặc cả 2 loại dữ liệu
+bằng cách setDataAndType().
+
+Action Data Mô tả
+ACTION_VIEW content://contacts/people/1 Hiển thị thông tin danh bạ của người dùng có id là 1
+ACTION_DIAL content://contacts/people/1 Hiển thị số điện thoại của người dùng có id là 1
+ACTION_VIEW tel:123 Hiển thị trình quay số cho số điện thoại điền vào
+ACTION_DIAL tel:123 Hiển thị trình quay số cho số điện thoại điền vào
+ACTION_EDIT content://contacts/people/1 Chỉnh sửa thông tin của người dùng có id là 1
+ACTION_VIEW content://contacts/people/ Hiển thị danh sách danh bạ
+ACTION_SET_WALLPAPER Hiển thị cấu hình của hình ảnh được chọn
+
+• Category : Một chuỗi bao gồm các thông tin loại component sẽ được x
+lý bởi intent. Chỉ định category bằng phương thức setCategory().
+• Extras : Thông điệp sẽ được truyền đi thông qua intent. Gữi thông điệp
+bằng phương thức putExtras(). Lấy thông điệp bằng phương thức
+getExtras().
+• Flags : Là một biến cờ dùng để chỉ định cho hệ thống android biết làm
+cách nào để mở một activity và truy xuất nó bằng cách nào.
+
+-Các biến Flags thường sử dụng:
+FLAG_ACTIVITY_CLEAR_TASK Nếu như đặt intent thông qua Context.startActivity() . Nếu như biến
+flag được sử dụng thì khi mở một Activity mới thì những Activity cũ
+sẽ mất đi
+FLAG_ACTIVITY_CLEAR_TOP Tất cả những Activity ở đầu sẽ bị xóa bỏ
+FLAG_ACTIVITY_NEW_TASK Flag này thường được sử dụng bởi một Activity muốn thể hiện hành vi style của Launcher
+
+-Khai báo Intent tường minh
+• Cú pháp : Intent intent = new Intent(activity1.this,activity2.class)
+• - để gữi thông điệp: intent.putExtras(“tên thông điêp”,dữ liệu );
+• - để kích hoạt intent : startActivity(intent).
+
+-Khai báo Intent không tường minh
+• Cú pháp : Intent intent = new Intent();
+• Đặt hành động cho intent : intent.setAction(Intent.ACTION_SEND);
+• Đặt dữ liệu cho hành động :
+intent.setData(ContactsContract.Contacts.CONTENT_URI)
+• Kích hoạt Intent : startActivity(intent);
+
+-Nhận Intent không tường minh
+• Để ứng dụng có thể nhận được những thông điệp từ bên ngoài chúng ta sẽ sử dụng <intent
+filter> khai báo trong AndroidManifest.xml.
+• Mỗi <intent-filter> được khai báo phải được nằm trong một activity.
+• Để chọn lọc loại thông điệp mà <intent-filter> có thể nhận chúng ta có 3 thuộc tính sau :
+• - <action> : Khai báo loại thông điệp mà ứng dụng có thể nhận
+• - <data> : Khai báo loại dữ liệu cho phép hoặc nhiều thuộc tính trong nhiều lĩnh vực khác
+nhau ( scheme, host, port, path, v…v ) và MIME
+• - <category> : Khai báo category cho phép trong tên của thuộc tính,.
+• Lưu ý : Khi nhận dữ liệu từ intent không tường minh, chúng ta phải khai báo
+CATEGORY_DEFAULT trong <intent-filter>. Phương thức startActivty() và
+startActivityForResult() sẽ truy xuất tất cả các thông điệp được khai báo Default. Nếu không
+khai báo DEFAULT thì thông điệp sẽ không được gữi tới activity.
+
+-Pending Intent
+• Pending Intent là một đối tượng được bao bọc xung quang Intent.
+Nhiệm vụ của PendingIntent là cung cấp quyền cho các ứng dụng bên
+ngoài có thể gữi những thông điệp cho ứng dụng của chúng ta xử lý.
+• Các trường hợp sử dụng PendingIntent bao gồm :
+• - Khai báo một intent để thực hiện một hành động nào đó khi user gữi
+một Notification
+• - Khai báo một intent để thực hiện một hành động cùng với App Widget
+• - Khai báo một intent để thực hiện thời gian đặc biệt trong tương lai (
+AlarmManager )
+
+
 //Chức năng của Intent
 -Để launch một Activity dùng phương thức startActivity()
 -Để gửi/phát một thông điệp broadcast đến các đối tượng BroadcastReceiver đăng ký nhận thông qua hàm broadcastIntent()
@@ -2514,12 +2646,63 @@ Tùy vào mục đích sử dụng, chúng ta sẽ phận Intent thành 2 loại
 //Explicit intents
 -Là những intent đã chỉ rõ thành phần sẽ nhận và xử lý.
 -Thông thường những intent này sẽ không cần gán bổ sung thêm các thuộc tính khác như action, data. 
--Explicit Intent thường được sử dụng để khởi chạy các activity, hoặc service trong cùng 1 ứng dụng
+-Explicit Intent thường được sử dụng để khởi chạy các activity, hoặc service trong cùng 1 ứng dụng.Ví dụ mở một Activity mới hay bắt đầu 1 service
 
 //Implicit intents 
   -Là các intent không chỉ rõ component xử lý, nhưng intent sẽ được gán bổ sung thông tin trong các thuộc tính. 
  -Hệ thống sẽ dựa vào những thông tin được trong intent được gửi đi này để quyết định component nào thích hợp nhất để xử lý nó.
- -Những implicit intent thường được dùng để kích hoạt các component bên trong ứng dụng khác
+ -Những implicit intent thường được dùng để kích hoạt các component bên trong ứng dụng khác.Ví dụ như gửi Mail,mở trình duyệt Web
+ 
+ //example startActivityForResult:có nghĩa là gửi dữ liệu ngược về.Ví dụ từ Activity 2 cho Activity 1
+ //Khi nhấn vào button Start ở Activity 1 thì sẽ chạy qua Activity 2 và Activity 2 sẽ gửi dữ liệu ngược về cho Activity 1
+ 
+ /**Activity 1**/
+ public class MainActivity extends AppCompatActivity {
+private  static  final int REQUEST_CODE=2;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+	//đây là sự kiện click Button để start activity 2
+    public void Start(View v){
+        startActivityForResult(new Intent(MainActivity.this,SecondActivity.class),REQUEST_CODE);
+    }
+	
+	//Hàm này để nhận  biến "value" từ Activity 2 gửi về
+  @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK&&requestCode==REQUEST_CODE){
+            if (data.hasExtra("value")) {
+                Toast.makeText(this, data.getExtras().getString("value"), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+ }
+ /**Activity 2*/
+ 
+ public class SecondActivity extends AppCompatActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.sencond_layout);
+    }
+	//Đây là sự kiệ click để gửi ngược lại dữ liệu cho Activity 1
+    public  void SendBack(View v){
+        finish();
+    }
+
+	//gửi biến tên là "value" về activity 1
+    @Override
+    public void finish() {
+        Intent data=new Intent();
+        data.putExtra("value","Hi,i have received from you");
+        setResult(RESULT_OK,data);
+        super.finish();
+    }
+}
+
 ------------------------------------------------------------------------------------------------------------------------------------------		
 *INTENT:
 		 bt=(Button)findViewById(R.id.bt);
@@ -2557,7 +2740,115 @@ Tùy vào mục đích sử dụng, chúng ta sẽ phận Intent thành 2 loại
                     i.putExtra("password",password);
                     i.putExtra("id",arrId.get(position));
                     context.startActivity(i);	
-------------------------------------------------------------------------------				
+----------------------------------------------------------------------------------------------------------------------------------------------
+**EXPLICIT INTENT GỬI DỮ LIỆU QUA BUNDLE:
+//Activity 1 gửi dữ liệu qua Activity 2
+		Intent activity2=new Intent(MainActivity.this,Activity2.class);
+        Bundle bd1=new Bundle();
+        Bundle bd2=new Bundle();
+        bd1.putString("name","Nguyen Ho Duy Khang");
+        bd2.putString("phone", "01695821150");
+        activity2.putExtra("bundle1",bd1);
+        activity2.putExtra("bundle2",bd2);
+        startActivity(activity2);
+//Activity 2 nhận dữ liệu
+		Intent intent=getIntent();
+        Bundle bd1=intent.getBundleExtra("bundle1");
+        Bundle bd2=intent.getBundleExtra("bundle2");
+        String name=bd1.getString("name");
+        String phone=bd2.getString("phone");
+        Toast.makeText(getApplicationContext(),"Name: "+name+"\n"+"Phone: "+phone,Toast.LENGTH_LONG).show();
+--------------------------------------------------------------------------------------------------------------------------------------------
+**EXPLICIT INTENT GỬI DỮ LIỆU DẠNG THƯỜNG
+//Activity 1 gửi dữ liệu qua Activity 2
+		Intent activity2=new Intent(MainActivity.this,Activity2.class);
+        activity2.putExtra("name","NGuyen Ho Duy Khang");
+        startActivity(activity2);
+//Activity 2 nhận dữ liệu		
+		Intent intent=getIntent();
+        String name=intent.getStringExtra("name");
+        Toast.makeText(getApplicationContext(),"Name: "+name,Toast.LENGTH_LONG).show();
+----------------------------------------------------------------------------------------------------------------------------------------------------
+*** EXPLICIT INTENT GỬI DỮ LIỆU DẠNG CLASS
+//Creates Employee class 
+public class Employee implements Serializable{//dạng mã hóa
+
+    private String name;
+    private String age;
+
+  public Employee(String N,String A){
+      this.name=N;
+      this.age=A;
+  }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+}
+
+//Activity 1 gửi dữ liệu qua Activity 2
+		Employee employee=new Employee("Nguyen Ho Duy Khang","20");
+        activity2.putExtra("employee",employee);
+        startActivity(activity2);
+		
+//Activity 2 nhận dữ liệu	
+		 Employee employee= (Employee) getIntent().getSerializableExtra("employee");
+        Toast.makeText(getApplicationContext(),"Name: "+employee.getName(),Toast.LENGTH_LONG).show();
+--------------------------------------------------------------------------------------------------------------------------------------------------=-------
+***IMPLICT INTENT:VÍ DỤ GỌI ĐIỆN THOẠI/GỬI TIN NHẮN/GỬI MAIL
+
+//example call	
+
+	/**Add on AndroidMaintifest.xml**/
+	<uses-permission android:name="android.permission.CALL_PHONE"/>
+	
+	/**MainActivity.java**/
+	 public void Call(View v){
+        Intent iCall=new Intent();
+        iCall.setAction(Intent.ACTION_CALL);
+        iCall.setData(Uri.parse("tel:0976671809"));
+        startActivity(iCall);
+    }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+***IMPLICT INTENT:INTENT FILTER
+
+//example ứng dụng nhận sự kiện chia sẽ ảnh:khi người dùng chọn file ảnh bất kì trong bộ sưu tập và chọn chia sẽ thì ứng dụng sẽ nằm trong danh sách ứng dụng được chia sẽ và nếu người dùng chọn đúng ứng dụng này thì nó sẽ hiển thị hình ảnh vào 1 imageview trong ứng dụng
+
+  /**Add on AndroidMaintifest.xml **/
+		<activity
+					android:name=".MainActivity"
+					android:label="@string/app_name"
+					android:theme="@style/AppTheme.NoActionBar" >
+					<intent-filter>
+						<action android:name="android.intent.action.MAIN" />
+
+						<category android:name="android.intent.category.LAUNCHER" />
+					</intent-filter>
+					<intent-filter>
+						<action android:name="android.intent.action.SEND"/>//nhận hảnh động chia sẽ
+						<category android:name="android.intent.category.DEFAULT"/>
+						<data android:mimeType="image/*"/> //lọc kiểu dữ liệu là file ảnh
+					</intent-filter>
+        </activity>
+		
+/**MainActivity.java**/
+		 img=(ImageView)findViewById(R.id.img);
+         Bundle bd=getIntent().getExtras();
+        if(bd!=null){
+            img.setImageURI((Uri) getIntent().getExtras().get(Intent.EXTRA_STREAM));
+        }
+---------------------------------------------------------------------------------------------------------------------------------------------------------			
 *GỬI DỮ LIỆU TỪ APP ĐẾN SERVER , FIX LỖI API 23:
 	copy file  org.apache.http.legacy.jar ở Android\sdk\platforms\android-23\optional
 	thểm file jar đó vào lib trong project và right click chọn add as library
@@ -3028,25 +3319,46 @@ public class Dog extends Animal {
 		
 -------------------------------------------------------------------------------
 	
-***	SHAREDPREFERENCES:LÀ DẠNG LƯU TRỮ DỮ LIỆU KHÔNG CẦN DATABASE DÙNG LÀM BỘ NHỚ ĐỆM
+***	SHAREDPREFERENCES:LÀ DẠNG LƯU TRỮ DỮ LIỆU KHÔNG CẦN DATABASE DÙNG BỘ NHỚ ĐỆM
+
+-SharedPreferences cho phép người dùng lưu trữ và truy xuất dữ liệu trong một file XML
+
+-Dữ liệu được lưu trữ trong file XML dưới dạng key – value
+
+-Để tạo ra một file Shared Preferences hoặc truy cập một file đã tồn tại chúng ta sẽ
+dùng 2 phương thức sau đây :
+
+• - getSharedPreferences() : phương thức này được sử dụng nếu như chúng ta cần
+truy cập tới 2 hay nhiều file Shared Preferences thông qua tên file của nó. Phương
+thức này sẽ được gọi thông qua Context.
+
+• - getPreferences() : sử dụng phương thức này cho Activity nếu như chúng ta cần sử
+dụng duy nhất một file Share Preference cho Activity đó. Nó sẽ truy xuất đến file
+Shared Preference thuộc Activity đó mà chúng ta không cần chỉ định tên file
+
+//example
 
 	//khởi tạo đối tượng
-	 SharedPreferences sp;
-	 
+	SharedPreferences sharedPreferences;
+   sharedPreferences = this.getSharedPreferences("Infor", Context.MODE_PRIVATE);
+        if(sharedPreferences.getString("name","")!=null){
+            edName.setText(sharedPreferences.getString("name",""));
+        }
 	//lưu giá trị vào SharedPreferences
     public void Save(View v){
-    SharedPreferences.Editor save=sp.edit();
-        save.putString("value", ed.getText().toString());
-        save.commit();
+			SharedPreferences.Editor editor=sharedPreferences.edit();
+            editor.putString("name",name);
+            editor.commit();
+            Toast.makeText(MainActivity.this,"Save Successed",Toast.LENGTH_LONG).show();
     }
 
     //lấy giá trị SharedPreferences
     public void Read(View v){
-    String s=sp.getString("value","");
+    String s=sp.getString("name","");
         Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
     }
-	*Note:SharedPreferences có thể ứng dụng vào việc lưa mật khẩu và tài khoản của người dùng
----------------------------------------------------------------------------------------------	
+	*Note:SharedPreferences có thể ứng dụng vào việc lưa mật khẩu và tài khoản của người dùng cũng như những thông tin cài đặt của ứng dụng
+------------------------------------------------------------------------------------------------------------------------------------------	
 **WEIGHTSUM:được dùng với LinearLayout dùng để chia theo tỉ lệ
 //Sử dụng với orientation="horizontal"
 <LinearLayout

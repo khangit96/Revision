@@ -828,6 +828,8 @@ Ngoài ra các tính năng như: thống kê, lọc, tìm kiếm thông qua các
 một chút... so với mô hình kết nối vì đòi hỏi chúng ta phải hiểu và sử dụng nhiều đối tượng hơn. 
 -DisplayMember là tên của cột của DataSource mà combobox đang sở hửu, nó là cột mà combobox muốn thể hiện ra. 
 -ValueMember cũng là tên của cột trong DataSource, nó là giá trị tương ứng với DisplayMember mà người dùng sẽ chọn.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-Truyền dữ liệu từ form 1 qua form 2 và từ form 2 về ngược lại form1(Delegate C#)
  
  
  
