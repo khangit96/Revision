@@ -36,7 +36,7 @@
 			Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
 			imgButton.setImageBitmap(bitmap);
 		
-**Note:khi set image bằng bitmap với thư mục raw và asset thì chất lượng hình ảnh mịn hơn và vưa kích thước hơn
+**Note:khi set image bằng bitmap với thư mục raw và asset thì chất lượng hình ảnh mịn hơn và vưa kích thước hơnFS
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 ***SERVICE:LÀ MỘT THÀNH PHẦN CỦA ỨNG DỤNG CÓ THỂ THỰC CÔNG VIỆC MÀ KHÔNG CẦN GIAO DIỆN NGƯỜI DÙNG.
 -Service có 2 dạng:startService() và bindService()
@@ -275,8 +275,12 @@ public class MainActivity extends AppCompatActivity {
           //Khi click thông tin mà người dùng search
           @Override
           public boolean onSuggestionClick(int position) {
-              Toast.makeText(MainActivity.this,"Position: "+""+position,Toast.LENGTH_LONG).show();
-              return false;
+               suggestionAdapter.getCursor().moveToPosition(position);
+                String query=suggestionAdapter.getCursor().getString(1);//lấy giá trị của item đk selected
+                Intent i=new Intent(HomeActivity.this,ListSongActivity.class);
+                i.putExtra("songName",query);
+                startActivity(i);
+                return true;
           }
       });
         return true;
