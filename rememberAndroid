@@ -1,10 +1,158 @@
 
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
-<View
-     android:layout_width="fill_parent"
-     android:background="#dcdcdc"
-     android:layout_height="10dp"/>
+------------------------------------------------------------------------------------------------------------------------------------------------------
+***Drawable:
+-Layer-list
+• Khái niệm : Là một dạng drawable được khai
+báo trong file XML của folder drawable , được
+dùng để hiển thị hình ảnh dưới dạng lớp (gôm nhiều hình ảnh lại thành 1 hình).
+-selector:cũng là 1 thành phần của drawable nhưng dùng để tạo ra các trạng thái của view như press,selected..
+//example tạo trong folder drawable
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/clock" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/calendar" android:state_focused="true"></item>
+    <item android:drawable="@drawable/calendar"></item>
+</selector>
+
+-shape:cũng là 1 thành phần của drawable dùng để vẽ các viền,tô màu cho các view
+//example
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">//kiểu rectangle
+    <solid android:color="@color/colorAccent"></solid>//màu nền
+    <stroke//viền
+        android:width="3dp"
+		android:dashGap="1dp"//tạo ra các viền
+		android:dashWith="3dp"//khoảng cách giữa các viền
+        android:color="@color/colorPrimaryDark"></stroke>
+    <corners//độ bo góc
+        android:radius="3dp"></corners>
+    <gradient android:angle="0"//đổ màu từ trái-phải,trên-dưới..
+        android:startColor="@color/colorAccent"
+        android:endColor="@color/colorPrimary"></gradient>
+</shape>
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+**Material DateTimePicker
+
+//build.gradle
+ compile 'com.wdullaer:materialdatetimepicker:2.3.0'
+ 
+ //import library
+ import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
+//MainActivity.java
+public class MainActivity extends AppCompatActivity implements  TimePickerDialog.OnTimeSetListener{
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+     /*   final Calendar c = Calendar.getInstance();
+        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
+        TimePickerDialog tpd = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay,
+                                          int minute) {
+                     //   txtTime.setText(hourOfDay + ":" + minute);
+                    }
+                }, mHour, mMinute, false);
+        tpd.show();*/
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                (TimePickerDialog.OnTimeSetListener) MainActivity.this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                false
+        );
+        tpd.setAccentColor(Color.parseColor("#F26149"));
+        tpd.show(getFragmentManager(), "Timepicker");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+            Toast.makeText(MainActivity.this,""+hourOfDay,Toast.LENGTH_LONG).show();
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+**id của menu back khi sử dụng với android:parentActivityName=".MainActivity"//đây là Activity muốn chuyển về
+ if(id== android.R.id.home){
+           Intent iHome=new Intent(Alarm.this,MainActivity.class);
+                iHome.putExtra("hours",hours);
+                iHome.putExtra("minutes",minutes);
+                iHome.putExtra("seconds", seconds);
+ 
+            Toast.makeText(Alarm.this,"Back",Toast.LENGTH_LONG).show();
+			   NavUtils.navigateUpTo(this, iHome);//gửi dữ liệu qua actvity parent
+        }
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+**THIẾT KẾ GIAO DIỆN ĐA MÀN HÌNH
+-Kích thước màn hình mặc định khi tạo layout là mdpi
+-để tạo giao diện khi khi nằm ngang(landscape)thì chỉ cần tạo folder layout với tên chỉ mục là layout-land(mặc định là mdpi) và phải tạo các file giống như giao diện gốc
++4.0,4.5 inch->layout-sw320dp
++4.6,4.7,4.8,4.9 inch->layout-sw360dp
++5.0 inch->layout-sw400dp
+-để tạo giao diện nằm đứng chỉ cần thêm "port" vào cuối đuôi chỉ mục
+-để tạo giao diện nằm ngang chỉ cần thêm "land" vào cuối đuôi chỉ mục
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+***CLEAR ACTIVITY STACK
+  i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+---------------------------------------------------------------------------------------------------------------------------------------------------
+**Google Map
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+***
+------------------------------------------------------------------------------------------------------------------------------------------------------
+**Ẩn/hiện Button bằng Java Code:
+
+//HIện button
+ btLitre.setVisibility(View.VISIBLE);
+ 
+ //Ẩn button
+  btLitre.setVisibility(View.GONE);//ẩn nhưng các view khác có thể chiếm lấy không gian
+  btLitre.setVisibility(View.INVISIBLE);//ngược lại các view sẽ không chiếm đk ko gian
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 ***ImageButton
 
@@ -498,7 +646,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:paddingpadding="16dp"
             >
             <ImageView
                 android:src="@drawable/test"
@@ -3119,8 +3267,28 @@ public class Employee implements Serializable{//dạng mã hóa
     	builder.create().show();    }
 		
 	
-------------------------------------------------------------------------------			
-	
+------------------------------------------------------------------------------------------------------------------------------------------
+**MATERIAL DIALOG :sử dụng appcompatv7
+
+//Import support v7 alert dialog
+import android.support.v7.app.AlertDialog		
+
+//Demo
+  AlertDialog.Builder builder =new AlertDialog.Builder(SecondActivity.this, R.style.AppCompatAlertDialogStyle);
+            builder.setTitle("SCRUM");
+            builder.setMessage("In the SCRUM methodology a sprint is the basic unit of development. Each sprint is preceded by a planning meeting, where the tasks for the sprint are identified and an estimated commitment for the sprint goal is made, and followed by a review or retrospective meeting where the progress is reviewed and lessons for the next sprint are identified. During each sprint, the team creates finished portions of a product.....");
+            builder.setPositiveButton("OK", null);//second parameter used for onclicklistener
+            builder.setNegativeButton("Cancel", null);
+            builder.show();
+			
+//Dialog Styles
+ <!-- Dialog Styles!-->
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#FFCC00</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:background">#5fa3d0</item>
+    </style>
+-----------------------------------------------------------------------------------------------------------------------------------------------	
 *CUSTOMLISTVIEW:
 	public class ListAdapter extends ArrayAdapter<SinhVien3> {
 
