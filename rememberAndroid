@@ -34,6 +34,61 @@ dùng để hiển thị hình ảnh dưới dạng lớp (gôm nhiều hình �
         android:endColor="@color/colorPrimary"></gradient>
 </shape>
 
+--------------------------------------------------------------------------------------------------------------------------------------------------
+**AppcompaSwitch v7
+
+//layout
+ <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/swichRepeat"
+                    android:layout_marginLeft="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"/>
+//java
+SwitchCompat switchRepeat;
+switchRepeat = (SwitchCompat) findViewById(R.id.swichRepeat);
+        switchRepeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {//lắng nghe sự kiện thay đổi khi người dùng thay đổi state
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    checkRepeat = true;
+                } else {
+                    checkRepeat = false;
+                }
+            }
+        });
+		//hiện thị state mặc định của SwitchCompat
+        if (switchRepeat.isChecked()) {
+            checkRepeat = true;
+        } else {
+            checkRepeat = false;
+        }		
+---------------------------------------------------------------------------------------------------------------------------------------------------
+**ToogleButton
+
+//layout
+ <ToggleButton
+                android:id="@+id/toggleWatering"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textOn="BẬT"
+                android:background="@color/red"
+                android:textOff="TẮT"
+                android:textColor="@color/white"
+                android:onClick="Led"
+                android:checked="true" />
+//java
+   //Hàm bật đèn
+    public void Led(View v) {
+        boolean checked = ((ToggleButton) v).isChecked();
+        if (checked) {
+            Toast.makeText(MainActivity.this, "Tắt đèn", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(MainActivity.this, "Bật đèn", Toast.LENGTH_LONG).show();
+
+        }
+    }
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 **Material DateTimePicker
 
