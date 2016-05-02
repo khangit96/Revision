@@ -2,6 +2,9 @@
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
 ------------------------------------------------------------------------------------------------------------------------------------------------------
+***Loading Indicator Library
+https://github.com/81813780/AVLoadingIndicatorView
+-------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Drawable:
 -Layer-list
 • Khái niệm : Là một dạng drawable được khai
@@ -33,7 +36,73 @@ dùng để hiển thị hình ảnh dưới dạng lớp (gôm nhiều hình �
         android:startColor="@color/colorAccent"
         android:endColor="@color/colorPrimary"></gradient>
 </shape>
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+**Save and Restore State of Activity When Device Rotates
 
+ @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {//restore
+        super.onRestoreInstanceState(savedInstanceState);
+        bt.setText(""+savedInstanceState.getInt("save_order"));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {//save
+        super.onSaveInstanceState(outState);
+		outState.putInt("save_order",3);
+    }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+**Multiple Languages:
+Tạo trong values/strings.xml.Khi hệ thống thay đổi thì ứng dụng sẽ cập nhật lại ngôn ngữ do mình tự định nghĩa
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+**Định nghĩa style cho view
+ //values/styles
+  <style name="text_style" parent="TextAppearance.AppCompat">
+       <item name="android:textSize">30sp</item>
+       <item name="android:textColor">@color/colorAccent</item>
+   </style>
+   <style name="text_style1" parent="text_style">//kế thừa từ text_style nên sẽ có tất cả thuộc tính .chỉ thêm vào   <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+         <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+   </style>
+   
+   //layout
+   <TextView
+        style="@style/text_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!" />
+---------------------------------------------------------------------------------------------------------------------------------------------------
+***Persistence:là dạng lưu trữ dữ liệu cũ khi người dùng thoát đột ngột ứng dụng
+-Sử dụng SHAREDPREFERENCES;
+//Demo sử dụng sharedPreferences kết hợp với editText để lưu trữ dữ liệu khi người dùng đang gõ mà thoát ứng dụng đột ngột
+EditText ed;
+SharedPreferences sp;
+ed=(EditText)findViewById(R.id.ed);
+        sp=getSharedPreferences("TEST", Context.MODE_PRIVATE);
+        if(!sp.getString("text","").equals("")){
+            ed.setText(sp.getString("text",""));
+        }
+		//sụ kiện thay đổi ở editText
+        ed.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                SharedPreferences.Editor editor=sp.edit();
+                editor.putString("text",s.toString());
+                editor.commit();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+--------------------------------------------------------------------------------------------------------------------------------------------------
+***Share Androd screen with pc/laptop
+-sử dụng mobizen app
 --------------------------------------------------------------------------------------------------------------------------------------------------
 **AppcompaSwitch v7
 
@@ -280,7 +349,7 @@ xử lý nhiều công việc cùng một lúc.
 -Hằng số trả về của onStartCommand()
 • - START_NOT_STICKY : Service sẽ không được tạo lại. Servic
 tạo lại nếu ở runtime gọi startService().
-• - START_STICKY : Service sẽ được tạo lại nếu như hệ thống
+• - START_STICKY : Service sẽ được tạo lại nếu như hệ thống hủy
 Service. Tất cả các dữ liệu chuyển tới onStartCommand() sẽ
 sử dụng để quản lý các trạng thái của Service và không phụ
 dữ liệu của Intent.
@@ -2215,9 +2284,7 @@ public class IncomingCall extends BroadcastReceiver {
 // add  AndroidMaintifest.xml
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
 	 <receiver android:name="com.example.administrator.broadcastreceiver_incomingcall.IncomingCall">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-            </intent-filter>
+            
         </receiver>
 -------------------------------------------------------------------------------------------------------------------------------------------------
 **HÀM TRẢ LỜI CUỘC GỌI TỰ ĐỘNG(ĐƯỢC DÙNG VỚI BROADCASTRECEIVER):
@@ -2375,6 +2442,120 @@ ublic class ScreenOffService extends Service {
                 <action android:name="com.androidexample.screenonoff.AEScreenOnOffService" />
             </intent-filter>
         </service>
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+***SERVICE INTERACT WITH ACTIVITY BY USING BROADCASTRECEIVER
+//MainActivity.java
+public class MainActivity extends AppCompatActivity {
+    TextView tvStatus;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        startService(new Intent(MainActivity.this, LocationService.class));
+        tvStatus = (TextView) findViewById(R.id.tvStatus);
+        BroadcastLocationStatus broadcastLocationStatus=new BroadcastLocationStatus();
+        IntentFilter intentFilter=new IntentFilter("detect_location_status");
+        registerReceiver(broadcastLocationStatus,intentFilter);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    class BroadcastLocationStatus extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean status = intent.getBooleanExtra("location_status", false);
+            if(status==true) {
+                tvStatus.setText("Welcome to home.");
+            }
+            else{
+                tvStatus.setText("Here is far. ");
+            }
+        }
+    }
+
+}
+//LocationService.java
+public class LocationService extends Service {
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //init location
+       final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        String provider = locationManager.GPS_PROVIDER;
+        locationManager.requestLocationUpdates(provider, 1000, 1, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                double latitude = location.getLatitude();
+                double longtitude = location.getLongitude();
+                Location home = new Location("home");
+                home.setLatitude(10.832568);
+                home.setLongitude(106.34952);
+                double distance = home.distanceTo(location);
+                Toast.makeText(getBaseContext(), "distance: " + distance, Toast.LENGTH_LONG).show();
+                 //Log.d("location", "lat: " + latitude + "long: " + longtitude);
+                if(distance<=10){
+                    Intent intent1=new Intent();
+                    intent1.putExtra("location_status",true);
+                    intent1.setAction("detect_location_status");
+                    sendBroadcast(intent1);
+                }
+                else {
+                    Intent intent1=new Intent();
+                    intent1.putExtra("location_status",false);
+                    intent1.setAction("detect_location_status");
+                    sendBroadcast(intent1);
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        });
+        return START_STICKY;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+}
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **SỬ DỤNG CONTEXT Ở SERVICE CLASS OR ACTIVITY CLASS:
 Context context = this;
