@@ -1,6 +1,148 @@
 
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+The short wat to to check ToogleButton,Switch,RadioButton
+String toogle=btToogle.isChecked()?"Turn on":"Turn off";
+String switchValue=switch.isChecked()?"Turn on":"Turn off";
+String gender=rbMale.isChecked()?"Male":"Female";
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+***BroadcastReceiver:khi reboot lại device thì BroadcastReceiver vẫn được khởi chạy lại miễn là không mất Force Stop trước khi reboot
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Service:khi reboot lại device thì service sẽ stop mặc dù trước đó có thể không bị kill.
+-Solution:use BroadcastReceiver to listen when system reboot and run service again
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Shake in android:
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+**putStringArrayListExtra:
+//MainActivity.java
+ ArrayList<String>arrayLis;
+ arrayLis=new ArrayList<>();
+ arrayLis.add("khang");
+ arrayLis.add("huy");
+ Intent intent=new Intent(MainActivity.this,Main2Activity.class);
+ intent.putStringArrayListExtra("array_list",arrayLis);
+ startActivity(intent);
+ //Main2Activity.java
+  Intent intent = getIntent();
+  ArrayList<String> arrayList = new ArrayList<>();
+  arrayList = intent.getStringArrayListExtra("array_list");
+  Toast.makeText(getApplicationContext(),""+arrayList.size(),Toast.LENGTH_LONG).show();
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Vibrate:
+// give your application the permission to vibrate:
+<uses-permission android:name="android.permission.VIBRATE"/>
+
+// Get instance of Vibrator from current Context
+Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+// Vibrate for 400 milliseconds
+v.vibrate(400);
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+**Shortcut Key in android studio:
+CTRL+ALT+L->format code;
+CTR+SHIFT+/->comment code
+ALT+ENTER tại sau giá trị text or color của view(Button,TextView..)->tạo ra một resources mà không cần vào values folder
+------------------------------------------------------------------------------------------------------------------------------------------------------
+**ScrollView only accept with one child View(LinearLayout,RelativeLayout...)
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+**Custom Font:
+-Create folder assets/fonts
+-Copy font under that folder.
+
+//Java code
+public class MainActivity extends Activity {
+	TextView tv;
+	
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        tv=(TextView)findViewById(R.id.tv);
+        Typeface pacificoFont = Typeface.createFromAsset(getAssets(), "fonts/Pacifico.ttf");
+        tv.setTypeface(pacificoFont);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+**Fullscreen no actionbar
+//use FrameLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/red"
+    tools:context="com.example.administrator.demo_game_card.wait_activity">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:src="@drawable/icon"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:text="TDMUG3"
+        android:textSize="30sp" />
+
+    <ProgressBar
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="50dp"
+        android:gravity="center"
+        android:text="Loading ..."
+        android:textColor="#ffffff"
+        android:textSize="15dp" />
+</FrameLayout>
+
+//values/styles
+<style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+	
+//AndroidMaintifest.xml	
+	<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.demosplashscreen">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Loading Indicator Library
 https://github.com/81813780/AVLoadingIndicatorView
