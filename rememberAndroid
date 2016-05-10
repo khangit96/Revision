@@ -2,10 +2,66 @@
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
 -------------------------------------------------------------------------------------------------------------------------------------------------------
-The short wat to to check ToogleButton,Switch,RadioButton
+***Disable Home key android
+https://github.com/shaobin0604/Android-HomeKey-Locker
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+***
+new Thread(new Runnable() {
+            @Override
+            public void run() {
+        }).start();
+cũng là 1 thread nhưng không thể cập nhật giao diện trong quá trình chạy
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+****Simple AsyncTask:
+
+//Call DoGetData
+ new DoGetData("http://khangserver-khangit.rhcloud.com/json.php").execute();
+ 
+//class DoGetData
+class DoGetData extends AsyncTask<Void, Void, Void> {
+         String urlLink;
+        String result = "";
+
+        public DoGetData(String URL) {
+            this.urlLink = URL;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                URL url = new URL(urlLink);
+                URLConnection conn = url.openConnection();
+                InputStream is = conn.getInputStream();
+                int byteCharater;
+                while ((byteCharater = is.read()) != -1) {
+                    result += (char) byteCharater;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            tv.setText(result);
+        }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+The short way to to check ToogleButton,Switch,RadioButton
 String toogle=btToogle.isChecked()?"Turn on":"Turn off";
 String switchValue=switch.isChecked()?"Turn on":"Turn off";
 String gender=rbMale.isChecked()?"Male":"Female";
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+***GetCurrentTime:
+//import library
+   import android.text.format.Time;
+// java code
+   Time today = new Time(Time.getCurrentTimezone());
+   today.setToNow();
+   String nowTime=today.format("%k:%M:%S");
+   Toast.makeText(getApplicationContext(),nowTime,Toast.LENGTH_LONG).show();
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***BroadcastReceiver:khi reboot lại device thì BroadcastReceiver vẫn được khởi chạy lại miễn là không mất Force Stop trước khi reboot
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,6 +84,130 @@ String gender=rbMale.isChecked()?"Male":"Female";
   ArrayList<String> arrayList = new ArrayList<>();
   arrayList = intent.getStringArrayListExtra("array_list");
   Toast.makeText(getApplicationContext(),""+arrayList.size(),Toast.LENGTH_LONG).show();
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Unlock Screen:
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+ public void UnlockScreen() {
+        KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        final KeyguardManager.KeyguardLock kl = km .newKeyguardLock("MyKeyguardLock");
+       kl.disableKeyguard();//mở trực tiếp lên disable mở khóa mặc định của hệ thống
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
+                | PowerManager.ACQUIRE_CAUSES_WAKEUP
+                | PowerManager.ON_AFTER_RELEASE, "MyWakeLock");
+        wakeLock.acquire();
+    }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+**LockScreen
+
+//MainActivity.java
+public class MainActivity extends AppCompatActivity implements OnClickListener {
+    Button btLockScreen;
+    private static final int ADMIN_INTENT = 15;
+    private static final String description = "Some Description About Your Admin";
+    private DevicePolicyManager mDevicePolicyManager;
+    private ComponentName mComponentName;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        mDevicePolicyManager = (DevicePolicyManager)getSystemService(
+                Context.DEVICE_POLICY_SERVICE);
+        mComponentName = new ComponentName(this, MyAdminReceiver.class);
+        Button btnEnableAdmin = (Button) findViewById(R.id.btnEnable);
+        Button btnDisableAdmin = (Button) findViewById(R.id.btnDisable);
+        Button btnLock = (Button) findViewById(R.id.btnLock);
+        btnEnableAdmin.setOnClickListener(this);
+        btnDisableAdmin.setOnClickListener(this);
+        btnLock.setOnClickListener(this);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnEnable:
+                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mComponentName);
+                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,description);
+                startActivityForResult(intent, ADMIN_INTENT);
+                break;
+
+            case R.id.btnDisable:
+                mDevicePolicyManager.removeActiveAdmin(mComponentName);
+                Toast.makeText(getApplicationContext(), "Admin registration removed", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.btnLock:
+                boolean isAdmin = mDevicePolicyManager.isAdminActive(mComponentName);
+                if (isAdmin) {
+                    mDevicePolicyManager.lockNow();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Not Registered as admin", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+ /*   @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADMIN_INTENT) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getApplicationContext(), "Registered As Admin", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getApplicationContext(), "Failed to register as Admin", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }*/
+
+}
+
+//MyAdminReceiver.java
+public class MyAdminReceiver extends DeviceAdminReceiver {
+}
+
+//AndroidMaintifest.xml
+  <receiver
+            android:name="MyAdminReceiver"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/admin" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+//res/xml/admin.xml
+<device-admin xmlns:android="http://schemas.android.com/apk/res/android" >
+    <uses-policies>
+        <force-lock />
+    </uses-policies>
+</device-admin>
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Vibrate:
 // give your application the permission to vibrate:
@@ -891,6 +1071,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         listView.addHeaderView(listHeader);
         listView.addFooterView(listFooter);
     }
+**Có thể chỉ add header or footer không nhất thiết phải add cả hai.
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 ***RecyclerView:
 -RecyclerView là một View mới trong android giống như ListView nhưng mạnh mẽ hơn rất nhiều.
@@ -3431,7 +3612,38 @@ public class Employee implements Serializable{//dạng mã hóa
  
  List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
  nameValuePair.add(new BasicNameValuePair("req", jsonobj.toString()));
- -------------------------------------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ***JSON:
+ 
+  /*Parse Json Object*/
+     tvShow = (TextView) findViewById(R.id.tvShow);
+        String json = "{ \"id\":1,\"name\":\"coca\"}";
+        try {
+            JSONObject jsonObject=new JSONObject(json);
+            int id=jsonObject.getInt("id");
+            String name=jsonObject.getString("name");
+            tvShow.setText("id: "+String.valueOf(id)+"\n"+"name: "+name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+ /*Parse Json Array*/
+        String jArray = "[{\"id\":1,\"name\":\"coca\"},{\"id\":2,\"name\":\"pepsi\"}]";
+        String result = "";
+        try {
+            JSONArray jsonArray = new JSONArray(jArray);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject item = jsonArray.getJSONObject(i);
+                result += "id:" + String.valueOf(item.getString("id"));
+                result += "name: " + item.getString("name");
+                result += "|";
+            }
+            tvJsonArray.setText(result);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------
  **GỬi JsonArray to server php:
  //client
 	//tạo JSONArray
