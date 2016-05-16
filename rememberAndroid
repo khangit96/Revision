@@ -1,16 +1,311 @@
 
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
--------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Webservice using Laravel FrameWork
+RestfulController:nó là Controller hổ trợ sẵn chúng ta các phương thức để show,edit,update,destroy,store..
+//example
+*GET
+http://localhost/code/WebServiceLaravel/public/SanPham/ // sẽ gọi phương thức index()  để lấy tất cả các sản phẩm
+http://localhost/code/WebServiceLaravel/public/SanPham/1 // gọi phương thức show() để lấy sản phẩm có id=1 
+
+*POST
+http://localhost/code/WebServiceLaravel/public/SanPham/ //sẽ goi phương thức store() để tạo mới sản phẩm
+http://localhost/code/WebServiceLaravel/public/SanPham/1 //nếu _method là PUT thì sẽ gọi phương thức update() để cập nhật sản phẩm
+http://localhost/code/WebServiceLaravel/public/SanPham/1 //nếu _method là DELETE thì sẽ gọi phương thức destroy() để xóa sản phẩm
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+**kiểu final không thể thay đổi đk giá trị.
+//example
+final String name="khang";
+name="huy";//không thể thay đổi giá trị name="huy";
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Disable Home key android
 https://github.com/shaobin0604/Android-HomeKey-Locker
----------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+**String to byte array
+String stringToConvert = "This String is 76 characters long and will be converted to an array of bytes";
+byte[] theByteArray = stringToConvert.getBytes();
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Byte array to String
+byte[] byteArray = new byte[] {87, 79, 87, 46, 46, 46};
+String value = new String(byteArray);
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Custom Keyboard
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Notification
+ //Simple notification
+ Notification notification=new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle("New message")
+                        .setContentText("You got a new message from Khangit")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .build();
+                NotificationManager notificationManager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.notify(1,notification);
+
+//Count notification:dùng cho trường hợp có nhiều notification từ app và giống nhau về id
+              count++;
+                Notification notification=new NotificationCompat.Builder(getApplicationContext())
+                        .setContentTitle(count+"New message")
+                        .setContentText("You got a new message from Khangit")
+                         .setNumber(count)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .build();
+                notificationManager.notify(2,notification);//2 là dùng để phân biệt các notification với nhau
+				
+
+//Open activity when click at notification
+ Intent mainIntent=new Intent(getBaseContext(),DetailActivity.class);//activity muốn chuyển đến
+                mainIntent.putExtra("messages","Hi, i am Khangit");//truyền dữ liệu qua activity muốn chuyển đến
+                PendingIntent pendingIntentMain=PendingIntent.getActivity(getBaseContext(), 0, mainIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification notification=new NotificationCompat.Builder(getBaseContext())
+                        .setContentTitle("New Message")
+                        .setContentText("You got a new message from Khangit")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentIntent(pendingIntentMain)
+                        .build();
+                notificationManager.notify(3,notification);
+				
+// Open Activity With Backstack:có nghĩa là click vào notification thì sẽ mở activity chi tiết và khi back lại thì sẽ quay lại home của ứng dụng
+  Intent mainIntent=new Intent(getBaseContext(),DetailActivity.class);//activity muốn chuyển đến khi click vào notification
+                TaskStackBuilder taskStackBuilder=TaskStackBuilder.create(getBaseContext());
+                taskStackBuilder.addParentStack(DetailActivity.class);
+                taskStackBuilder.addNextIntent(mainIntent);
+                mainIntent.putExtra("messages","Hi, i am Khangit");
+                PendingIntent pendingDetail=taskStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification notification=new NotificationCompat.Builder(getBaseContext())
+                        .setContentTitle("New Message")
+                        .setContentText("You got a new message from Khangit")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setAutoCancel(true)//tự động close notification khi click vào
+                        .setContentIntent(pendingDetail)
+                        .build();
+                notificationManager.notify(4,notification);
+				
+	/**AndroidMaintifest.xml**/			
+  <activity
+            android:name=".DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+				
+**Note:đối với api 21 trở lên thì android có hổ trợ thêm cơ chế bảo mật notification đối với những message nhạy cảm
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+***Alarm Service:là dịch vụ  giúp chúng ta làm những việc có tính chất lặp lại như báo thức giờ ...(chạy ngầm)
+Đối với android 5.0 trở lên (api >=21) thì khoảng thời gian lặp lại phải từ 1 phút trở lên(>=60000 milisecond)
+
+  public void Start(View v){
+	  //nếu đúng khoảng thời gian đã xác định thì hệ thống sẽ gửi 1 broadcast.
+        Calendar calendar=Calendar.getInstance();
+        Intent intentAction=new Intent();
+        intentAction.setAction("alarm_job");
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(getBaseContext(),0,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager=(AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),10000,pendingIntent);//
+    }
+	
+//Tạo class AlarmJob
+public class AlarmJob extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Toast.makeText(context,"Alarm",Toast.LENGTH_LONG).show();
+    }
+}
+//AndroidMaintifest.xml đăng kí broadcast
+<receiver android:name=".AlarmJob">
+            <intent-filter>
+                <action android:name="alarm_job"/>
+            </intent-filter>
+        </receiver>
+	
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Read and Write File
+
+//Write file
+ public void Write(View v) throws IOException {
+        String text = edWrite.getText().toString();
+        //save at download folder
+        String filePath = Environment.getExternalStorageDirectory().getPath() + "/" + Environment.DIRECTORY_DOWNLOADS + "/"+"khang.txt";
+        File textFle = new File(filePath);
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(textFle);
+            fw.write(text);
+            fw.flush();
+            Toast.makeText(getApplicationContext(),"File saved at"+filePath,Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+	
+//Read file
+    public void Load(View v){
+        String filePath=Environment.getExternalStorageDirectory().getPath()+"/"+Environment.DIRECTORY_DOWNLOADS+"/"+"khang.txt";
+        FileReader fr=null;
+        try{
+            fr=new FileReader(filePath);
+            int byteCharacter=-1;
+            String result="";
+            while ((byteCharacter=fr.read())!=-1){
+                result+=(char)byteCharacter+"";
+            }
+            edWrite.setText(result);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                fr.close();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***
 new Thread(new Runnable() {
             @Override
             public void run() {
         }).start();
 cũng là 1 thread nhưng không thể cập nhật giao diện trong quá trình chạy
+
+runOnUiThread cũng là 1 Thread nhưng có thể cập nhật lại giao diện
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+***Webservice using RESTful:
+--Là một dịch vụ web đơn giản sử dụng HTTP và tính chất của REST.
++POST (HttpPost) – Tạo một tài nguyên trên máy chủ
++GET (HttpGet) – Truy xuất một tài nguyên
++PUT (HttpPut) – Thay đổi trạng thái một tài nguyên hoặc để cập nhật nó
++DELETE (HttpDelete) – Huỷ bỏ hoặc xoá một tài nguyên
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Webservice using SOAP
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Convert file to byte
+
+  public byte[] FileLocal_To_Byte(String path){
+        File file = new File(path);
+        int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        try {
+            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+            buf.read(bytes, 0, bytes.length);
+            buf.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return bytes;
+    }
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Choose Image From Photo
+  private static final int SELECT_PHOTO = 100;
+  private String imagePath = "";
+
+//btChoose click event
+ btnChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent,SELECT_PHOTO);
+            }
+        });
+
+//Hàm này trả về kết quả sau khi chọn image xong
+@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch(requestCode) {
+            case SELECT_PHOTO:
+                if(resultCode == RESULT_OK){
+                  
+                    Uri selectedImage = imageReturnedIntent.getData();
+					//get image path
+                    imagePath = getPath(selectedImage);
+                    Toast.makeText(getApplicationContext(),imagePath, Toast.LENGTH_LONG).show();
+                    InputStream imageStream = null;
+                    try {
+                        imageStream = getContentResolver().openInputStream(selectedImage);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+					//Set imageview form bitMap
+                    Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+                    imageView.setImageBitmap(yourSelectedImage);
+                }
+        }
+    }
+//Hàm lấy đường dẫn hình ảnh từ photo
+    public String getPath(Uri uri) {
+
+        if (uri == null) {
+            return null;
+        }
+
+        // this will only work for images selected from gallery
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+
+        return uri.getPath();
+    }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+//Hàm enCodeImage:mã hóa hình ảnh về dạng byte use Base64
+ private String encodeImage(String path)
+    {
+        File imagefile = new File(path);
+        FileInputStream fis = null;
+        try{
+            fis = new FileInputStream(imagefile);
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
+        Bitmap bm = BitmapFactory.decodeStream(fis);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] b = baos.toByteArray();
+        String encImage = Base64.encodeToString(b, Base64.DEFAULT);
+        //Base64.de
+        return encImage;
+    }
+
+//Hàm deCode image về bitmap:giải mã hình hảnh về bitMap
+	private Bitmap decodeImage(String data)
+{
+    byte[] b = Base64.decode(data,Base64.DEFAULT);     Bitmap bmp = BitmapFactory.decodeByteArray(b,0,b.length);     return bmp;
+}    
+
+//Hàm gửi hình hảnh lên server socket.io
+ public void sendImage(String path)
+    {
+        JSONObject sendData = new JSONObject();
+        try{
+            sendData.put("image", encodeImage(path));
+            socket.emit("message",sendData);
+        }catch(JSONException e){
+        }
+    }
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 ****Simple AsyncTask:
 
@@ -47,6 +342,99 @@ class DoGetData extends AsyncTask<Void, Void, Void> {
             super.onPostExecute(aVoid);
             tv.setText(result);
         }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+***More AsyncTask :bằng cách lấy các params dạng mảng:params[0],params[1],param[2]
+
+//Call DoGetData
+new DoGetData().execute("http://khangserver-khangit.rhcloud.com/json.php","http://khangserver-khangit.rhcloud.com/json.php");
+
+//Class DoGetData
+class DoGetData extends AsyncTask<String, Integer, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setMessage("Loading...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result="";
+            try {
+                URL url = new URL(params[0]);
+                URLConnection conn = url.openConnection();
+                InputStream is = conn.getInputStream();
+                int byteCharater;
+                while ((byteCharater = is.read()) != -1) {
+                    result += (char) byteCharater;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressDialog.dismiss();
+            super.onPostExecute(s);
+            tv.setText(s);
+        }
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+***AsyncTask With Progress:
+class DoGetData extends AsyncTask<String, Integer, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setMessage("Loading...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMax(100);
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result = "";
+            try {
+                URL url = new URL(params[0]);
+                URLConnection conn = url.openConnection();
+                InputStream is = conn.getInputStream();
+                int byteCharater;
+                int loadByte = 0;
+                int totaLe = conn.getContentLength();
+                while ((byteCharater = is.read()) != -1) {
+                     result += (char) byteCharater;
+                     loadByte++;
+                    int progress = loadByte * 100 / totaLe;
+                    publishProgress(progress);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressDialog.dismiss();
+            super.onPostExecute(s);
+            tv.setText(s);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            int p=values[0];
+            progressDialog.setProgress(p);
+        }
+    }
+
+
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 The short way to to check ToogleButton,Switch,RadioButton
 String toogle=btToogle.isChecked()?"Turn on":"Turn off";
@@ -3995,17 +4383,23 @@ ArrayList<Animal> arrayList=new ArrayList<>();
            }
        });
 -----------------------------------------------------------------------------------------------------------------------------------------
-*abstract java
-//Base class
-public class Animal{
-        private  String name;
-        private  String color;
-        public Context context;
-        public String getName() {
-            return name;
-        }
+*Abstract class:
+-Đặc điểm của một class trìu tượng là:
++Nó được khai báo bằng từ khóa abstract.
++Nó có thể khai báo 1 hoặc nhiều method trừu tượng hoặc phương thức  không trừu tượng bên trong.
++Không thể khởi tạo 1 đối tương trực tiếp từ một class trìu tượng.
++Khi class con kế thừa từ class trừu tượng thì phải override lại cái phương thức trừu tượng của lớp đó.
 
-        public void setName(String name) {
+//Base class
+public abstract class Animal {
+    private String name;
+    private String color;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -4016,15 +4410,32 @@ public class Animal{
     public void setColor(String color) {
         this.color = color;
     }
+    public abstract void run();//abstract method
+    public abstract void eat();//abstract method
 }
-//Class Dog.java extends From Animal Base class
+//DOg class
 public class Dog extends Animal {
-    public Dog(Context context,String name, String color) {
+    public Context context;
+    public Dog(Context context,String name,String color){
+        this.context=context;
         this.setName(name);
         this.setColor(color);
-        this.context=context;
+    }
+    
+    @Override
+    public void run() {//override lại abstract method
+        Toast.makeText(context.getApplicationContext(),this.getName()+" is running",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void eat() {//override lại abstract method
+
     }
 }
+
+//Main
+ Animal dog=new Dog(this,"Ben","Blue");
+ dog.run();
 
 ---------------------------------------------------------------------------------------------------------------------------------------------				
 	
@@ -4496,7 +4907,7 @@ io.sockets.on('connection', function (socket) {
 	
 	
 	
---------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 **CONNECT NODE JS to MYSQL :
 
@@ -4563,10 +4974,81 @@ mysql_select_db(DB_DATABASE) or die(mysql_error());
          }
 mysql_close();
 	
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+***Variable
+var n=10;
+var s="ABC";
+var x="5";
+x=parseInt(x);
+
+***Array
+var arr=["khang","thuy linh"];
+arr.push("long");
+arr.push("ngoc");
+
+**Function
+function tinhTong(a,b){
+	return a+b;
+}
+var x=tinhTong(3,5);
+---------------------
+
+function hello(){
 	
+}
+function goiHam(fn){
+	fn();
+}
+goiHam(hello);
+---------------------
 
+var tong=function(){
+	
+}
+tong();
+-----------------------------
+***OOP:
+ var person={
+	 ho:"Nguyễn",
+	 ten:"Khang",
+	 chaoMung:function(){
+		 console.log("chao mung: "+this.ho+" "+this.ten);
+	 }
+ }
+ person.chaoMung();
+ console.log(person["ten"]);
+ -------------------------------
+ function KhoaHoc(ten,hocphi){
+	 this.Ten=ten;
+	 this.HocPhi=hocphi;
+ }
+ KhoaHoc.prototype.mota=function(){
+	 console.log("Hello"+this.Ten);
+ }
+ var nodejs=new KhoaHoc("Lap trinh NodeJs"),5000000;
+ nodejs.mota();
+ 
+ ------------------------------------------------
+ ***BUFFER:
+ 
+ var buffer=new Buffer("Hello","utf-8");
+ console.log(buffer);
+ 
+ ---------------------------------
+ console.log(buffer.toString());//convert buffer to String
+ 
+ --------------------------------
+ console.log(buffer.toJSON());//convert buffer to JSON
+ 
+ ------------------------------------
+ ***FILE
+ var fs=require("fs");
+ var noidung=fs.readFileSync(__dirname+"/danhsach.txt");
+ console.log(noidung);
+ console.log(noidung.toString());
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-=================================================================JAVA============================================================================
+=================================================================JAVA======================================================================================
 **KIỂU DỮ LIỆU:TƯƠNG TỰ C++
 	int,double,boolean,char,string
 ------------------------------------------------------------------------------	
