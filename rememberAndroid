@@ -2,6 +2,54 @@
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Kill Background Service
+<uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+  ActivityManager activityManager= (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+  activityManager.killBackgroundProcesses(getPackageName());
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Convert image to String
+ public String ImageView_To_String(ImageView iv){
+        BitmapDrawable drawable = (BitmapDrawable) iv.getDrawable();
+        Bitmap bmp = drawable.getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        String strHinh = Base64.encodeToString(byteArray, 0);
+        return strHinh;
+    }
+***String to ImageView
+ public void String_To_ImageView(String strBase64, ImageView iv){
+        byte[] decodedString = Base64.decode(strBase64, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        iv.setImageBitmap(decodedByte);
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Sort in java
+       tv=(TextView)findViewById(R.id.tv);
+        arrName=new ArrayList<>();
+        arrName.add("1");
+        arrName.add("5");
+        arrName.add("2");
+        arrName.add("4");
+        arrName.add("8");
+        String result="";
+      /*  before sort
+        for(int i=0;i<arrName.size();i++){
+            result+=arrName.get(i);
+            result+=" ";
+        }
+        tv.setText(result);*/
+
+        /*After sort*/
+        Collections.sort(arrName);//sort by ascending
+        for(int i=0;i<arrName.size();i++){
+            result+=arrName.get(i);
+            result+=" ";
+        }
+        tv.setText(result);
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+***Append TextView:nối thêm text cho TextView
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Webservice using Laravel FrameWork
 RestfulController:nó là Controller hổ trợ sẵn chúng ta các phương thức để show,edit,update,destroy,store..
 //example
@@ -13,6 +61,67 @@ http://localhost/code/WebServiceLaravel/public/SanPham/1 // gọi phương thứ
 http://localhost/code/WebServiceLaravel/public/SanPham/ //sẽ goi phương thức store() để tạo mới sản phẩm
 http://localhost/code/WebServiceLaravel/public/SanPham/1 //nếu _method là PUT thì sẽ gọi phương thức update() để cập nhật sản phẩm
 http://localhost/code/WebServiceLaravel/public/SanPham/1 //nếu _method là DELETE thì sẽ gọi phương thức destroy() để xóa sản phẩm
+
+***POST client side
+private String POST_URL(String url, String type) {
+        HttpClient httpClient = new DefaultHttpClient();
+
+        // URL của trang web nhận request
+        HttpPost httpPost = new HttpPost(url);
+
+        // Các tham số truyền
+        List nameValuePair = new ArrayList(4);
+        nameValuePair.add(new BasicNameValuePair("TenSP", edtTenSP.getText().toString()));
+
+        String sHinh =  ImageView_To_String(imgvHinhSP);
+        nameValuePair.add(new BasicNameValuePair("HinhSP", sHinh));
+
+        nameValuePair.add(new BasicNameValuePair("Gia", edtGiaSP.getText().toString()));
+
+        nameValuePair.add(new BasicNameValuePair("_method", type));
+
+        //Encoding POST data
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String kq = "";
+        try {
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            kq = EntityUtils.toString(entity);
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return kq;
+    }
+***GET Show all product
+private static String GET_URL(String theUrl)
+    {
+        StringBuilder content = new StringBuilder();
+        try
+        {
+            URL url = new URL(theUrl);
+            URLConnection urlConnection = url.openConnection();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null)
+            {
+                content.append(line + "\n");
+            }
+            bufferedReader.close();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return content.toString();
+    }
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 **kiểu final không thể thay đổi đk giá trị.
 //example
@@ -90,6 +199,38 @@ String value = new String(byteArray);
         </activity>
 				
 **Note:đối với api 21 trở lên thì android có hổ trợ thêm cơ chế bảo mật notification đối với những message nhạy cảm
+
+//Add action to notification:sử dụng broadcast để delete 
+ Intent replyIntent=new Intent(getBaseContext(),ReplyActivity.class);
+                replyIntent.putExtra("reply_to","khangit");
+                Intent deleteIntent=new Intent();
+                deleteIntent.setAction("delete_message");
+                PendingIntent pendingDelete=PendingIntent.getBroadcast(getBaseContext(),0,deleteIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingReply=PendingIntent.getActivity(getBaseContext(), 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification notification=new NotificationCompat.Builder(getBaseContext())
+                        .setContentTitle("New Message")
+                        .setContentText("You got a new message from Khangit")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setAutoCancel(true)
+                        .addAction(R.mipmap.ic_launcher,"Reply",pendingReply)
+                        .addAction(R.mipmap.ic_launcher, "Delete", pendingDelete)
+                        .build();
+                notificationManager.notify(7,notification);
+				
+  /**AndroidMaintifest.xml**/
+				 <receiver android:name=".DeleteBroadcast">
+            <intent-filter>
+                <action android:name="delete_message"/>
+            </intent-filter>
+        </receiver>
+		
+/**DeleteBroadcast.java**/
+public class DeleteBroadcast extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d("test","Deleted");
+    }
+}
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Alarm Service:là dịch vụ  giúp chúng ta làm những việc có tính chất lặp lại như báo thức giờ ...(chạy ngầm)
 Đối với android 5.0 trở lên (api >=21) thì khoảng thời gian lặp lại phải từ 1 phút trở lên(>=60000 milisecond)
