@@ -6,6 +6,61 @@
 <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
   ActivityManager activityManager= (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
   activityManager.killBackgroundProcesses(getPackageName());
+  
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ***TimePickerDialog
+ -----------------------------------------------------------------------------------------------------------------------------------------------------------
+ **DatePickerDialog
+ ------------------------------------------------------------------------------------------------------------------------------------------------------------
+ **Get location by using google play service
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ***Spinner:dùng để hiện thị dữ liệu giống như listview
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------
+ ***Popup menu:dùng để thể hiện action như take photo,send sms
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------
+ ***Multiple choices Dialog
+     public void Group(View v) {
+        String[] group = new String[]{"Facebook", "Zalo", "Zing"};
+        boolean[] check = new boolean[]{true, false, true};
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Multiple choices")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setMultiChoiceItems(group, check, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                    }
+                })
+                .create();
+        alertDialog.show();
+    }
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+**Single choices Dialog
+ -------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Check gps state 
+ final LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        String provider = locationManager.GPS_PROVIDER;
+        if (!locationManager.isProviderEnabled(provider)) {
+            //check if gps disable
+            Toast.makeText(getBaseContext(), "GPS is disable", Toast.LENGTH_LONG).show();
+             startActivity( new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));//open location setting
+        } else {
+            //check if gps enabled
+            Toast.makeText(getBaseContext(), "GPS is enabled", Toast.LENGTH_LONG).show();
+        } 
+ 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Convert image to String
  public String ImageView_To_String(ImageView iv){
@@ -24,7 +79,7 @@
         iv.setImageBitmap(decodedByte);
     }
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
-***Sort in java
+***Sort ArrayList in java
        tv=(TextView)findViewById(R.id.tv);
         arrName=new ArrayList<>();
         arrName.add("1");
@@ -47,6 +102,63 @@
             result+=" ";
         }
         tv.setText(result);
+		
+**Sort ArrayList object
+//MainActivity.java
+ arrPerson=new ArrayList<>();
+        arrPerson.add(new Person("Duy Khang",40));
+        arrPerson.add(new Person("Thùy Linh",50));
+        arrPerson.add(new Person("Văn Tiến", 30));
+        Collections.sort(arrPerson);
+        String result="";
+        for(int i=0;i<arrPerson.size();i++){
+            result+=arrPerson.get(i).getName();
+            result+=",";
+        }
+        tv.setText(result);
+		
+//Person.java
+public class Person implements Comparable<Person>{
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    @Override
+    public int compareTo(Person p) {
+        int compareage=((Person)p).getAge();
+        /* For Ascending order*/
+        return this.getAge()-compareage;
+
+        /* For Descending order do like this */
+        //return compareage-this.studentage;
+    }
+}
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Append TextView:nối thêm text cho TextView
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
