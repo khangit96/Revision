@@ -2,9 +2,43 @@
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ***Get view at position listview
+ lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+               View v= adapterView.getChildAt(0);
+                v.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+
+            }
+        });
+
+***Chang color view when click in listview
+lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View viewCurrent, int posCurrent, long l) {
+                if (position != -1) {
+                    View v = adapterView.getChildAt(position);//get view at position
+                    v.setBackgroundColor(getResources().getColor(R.color.white));
+                }
+
+                viewCurrent.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                position = posCurrent;
+
+            }
+        });
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+***AutoCompleteTextView
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Soundpool
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Timer
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Dữ liệu cố định thì nên đưa vào String-array in value/strings.xml
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+***setVisibility(View.GONE)/setVisibility(View.Invisible)
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+***Animattion 
+tv.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,android.R.anim.slide_out_right));
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Handler:là 1 thread có thể cập nhật lại giao diện.Có thể kết hợp với cái Worker Thread(không thể cập nhật lại giao diện người dùng)
 protected static void startTimer() {
@@ -72,6 +106,35 @@ public Handler mHandler = new Handler() {
   +Chọn các chế độ hiển thị của google map
   +Chỉ đường đi từ A đến B
   +Vẽ địa điểm trên google map
+  //OnMyLocationChangeListener
+    GoogleMap.OnMyLocationChangeListener listener=new GoogleMap.OnMyLocationChangeListener() {
+        @Override
+        public void onMyLocationChange(Location location) {
+            LatLng hcmus = new LatLng(location.getLatitude(),location.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(hcmus).title("Chỗ tui đứng"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 16f));
+        }
+    };
+
+/*On Map Ready*/
+	    mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationChangeListener(listener);
+        LatLng hcmus = new LatLng(10.762984,106.682329);
+        mMap.addMarker(new MarkerOptions().position(hcmus).title("KHTN"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 16f));
+        LatLng dhsg=new LatLng(10.759677,106.682387);
+		//draw Polyline
+        mMap.addPolyline(new PolylineOptions().add(
+                        hcmus,
+                        new LatLng(10.761184, 106.683331),
+                        new LatLng(10.760710, 106.682204),
+                        dhsg)
+                        .width(10)
+                        .color(Color.RED)
+
+        );
+/*Google map direction API*/
+https://maps.googleapis.com/maps/api/directions/json?origin=10.8325783,106.3509766&destination=10.8324716,106.3510016&key=AIzaSyAzxaiKRJ88fKFkSapcaoJG1SDjtn5cPt0
   ------------------------------------------------------------------------------------------------------------------------------------------------------------
   ***Google cloud message
  -------------------------------------------------------------------------------------------------------------------------------------------------------------
