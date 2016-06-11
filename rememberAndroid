@@ -2,6 +2,21 @@
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+***CHANGE BUTTON TEXT COLOR WHEN PRESS USE DRAWABLE
+//layout
+  <Button
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Layer list"
+        android:textColor="@drawable/button_text_color" />
+//drawable/button_text_color	
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:state_pressed="false" android:color="#ffffff" />
+    <item android:state_focused="true" android:state_pressed="true" android:color="#000000" />
+    <item android:state_focused="false" android:state_pressed="true" android:color="#000000" />
+    <item android:color="#ffffff" />
+</selector>
+------------------------------------------------------------------------------------------------------------------------------------------------------------
  ***Get view at position listview
  lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -26,6 +41,19 @@ lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             }
         });
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+**Custom progressBar can use progressDrawable attribute
+  <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:maxHeight="10dip"
+        android:minHeight="10dip"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_drawable"//file progress_drawable.xml in drawable folder
+        android:layout_alignParentTop="true"
+        android:indeterminate="false" />
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 ***AutoCompleteTextView
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
