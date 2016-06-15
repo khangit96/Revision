@@ -2,6 +2,99 @@
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+**Put ArrayList<Home> over intent:
+	//activity send
+  Intent intent = new Intent(MapsActivity.this, ResultActivity.class);
+  intent.putParcelableArrayListExtra("homeArrayList", (ArrayList<? extends Parcelable>) homeArrayList1);
+  startActivity(intent);
+ //activity receive
+    Intent intent = getIntent();
+    homeArrayList =intent.getParcelableArrayListExtra("homeArrayList");
+    Toast.makeText(getApplicationContext(), "" + homeArrayList.size(), Toast.LENGTH_LONG).show();
+//class
+	public class Home implements Parcelable {
+    public double latitude;
+    public double longtitude;
+    public String name;
+    public int distance;
+
+    public Home(double latitude, double longtitude, String name, int distance) {
+        this.latitude = latitude;
+        this.longtitude = longtitude;
+        this.name = name;
+        this.distance = distance;
+    }
+
+    protected Home(Parcel in) {
+        latitude = in.readDouble();
+        longtitude = in.readDouble();
+        name = in.readString();
+        distance = in.readInt();
+    }
+
+    public static final Creator<Home> CREATOR = new Creator<Home>() {
+        @Override
+        public Home createFromParcel(Parcel in) {
+            return new Home(in);
+        }
+
+        @Override
+        public Home[] newArray(int size) {
+            return new Home[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longtitude);
+        parcel.writeString(name);
+        parcel.writeInt(distance);
+    }
+}
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+**TAKE SCREENSHOT ANDROID:
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  private void takeScreenshot() {
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + ".jpg";
+
+            // create bitmap screen capture
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or OOM
+            e.printStackTrace();
+        }
+    }
+    private void openScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***CHANGE BUTTON TEXT COLOR WHEN PRESS USE DRAWABLE
 //layout
   <Button
@@ -16,6 +109,171 @@
     <item android:state_focused="false" android:state_pressed="true" android:color="#000000" />
     <item android:color="#ffffff" />
 </selector>
+
+***CHANGE BACKGROUND IMAGEBUTTON WHEN PRESS USE DRAWABLE
+//layout.xml
+  <ImageButton
+        android:background="@drawable/button_background"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/image_drawable" />
+		
+//button_background.xml
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/button_press" android:state_pressed="true"/>
+</selector>
+
+//button_press.xml
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+  <solid android:color="@color/colorPrimary"/>
+</shape>
+------------------------------------------------------------------------------------------------------------------------------------------------------
+***Set HTML to TextView
+myTextView.setText(Html.fromHtml("<h2>Title</h2><br><p>Description here</p>"));
+-----------------------------------------------------------------------------------------------------------------------------------------------
+***FACEBOOK ANDROID:
+//share 
+public class MainActivity extends AppCompatActivity {
+    ShareDialog shareDialog;
+    CallbackManager callbackManager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
+    }
+
+	//Share link
+    public void Share(View v) {
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            // Ví dụ với link. Video và ảnh tương tự
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle("Tự học android")
+                    .setContentDescription(
+                            "Tự học android hướng dẫn cách dùng Facebook SDK")
+                    .setContentUrl(Uri.parse("http://tuhocandroid.com/"))
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
+    }
+	
+	//Share photo
+	  Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.btn_playgame);
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .setCaption("Give me my codez or I will ... you know, do that thing you don't like!")
+                .build();
+        if (ShareDialog.canShow(SharePhotoContent.class)) {
+            Toast.makeText(getApplicationContext(), "Ok", Toast.LENGTH_LONG).show();
+            SharePhotoContent sharePhotoContent = new SharePhotoContent.Builder()
+                    .addPhoto(photo)
+                    .build();
+
+            shareDialog.show(sharePhotoContent);
+        } else {
+            Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+        }
+		
+	//SHARE PHOTO IF NOT INSTALL NATIVE FACEBOOK APP:
+	BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+    bmOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+    Bitmap image = BitmapFactory.decodeFile(imagePathForShare, bmOptions);
+
+    SharePhoto photo = new SharePhoto.Builder().setBitmap(image).build();
+
+    SharePhotoContent content = new SharePhotoContent.Builder().addPhoto(photo).build();
+
+    Toast.makeText(getApplicationContext(), getString(R.string.facebook_uploading), Toast.LENGTH_SHORT).show();
+
+    ShareApi.share(content, new FacebookCallback<Sharer.Result>() {
+        @Override
+        public void onSuccess(Sharer.Result result)
+        {
+            Toast.makeText(getApplicationContext(), getString(R.string.facebookSuccessful), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel()
+        {
+            Log.v("FACEBOOK_TEST", "share api cancel");
+        }
+
+        @Override
+        public void onError(FacebookException e)
+        {
+            Log.v("FACEBOOK_TEST", "share api error " + e);
+        }
+    });
+}
+--------------------------------------------------------------------------------------------------------------------------------------------
+**Get key hash facebook    
+	// Add code to print out the key hash
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.demofacebook",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = null;
+                try {
+                    md = MessageDigest.getInstance("SHA");
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                assert md != null;
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+---------------------------------------------------------------------------------------------------------------------------------------------------
+	
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+***Multiple Language:
+-----------------------------------------------------------------------------------------------------------
+**Multiple screen:
+//layout
+small:2.0-3.7 inch
+normal:3.7-4.3 inch
+large:4.1-7.1
+xlarge:7.0-10.1 inch
+
+dpi=mật độ điểm ảnh=sqrt(chiều roongj^2+chiều cao^2 )/số inch
+px=dp*(dpi/160)
+sw<dp>=px/(dpi/160)
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+**GridView:dùng cho hiển thị hình ảnh
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+**Change position view using java code
+ImageView myImage = (ImageView) findViewById(R.id.image_view);
+MarginLayoutParams marginParams = (MarginLayoutParams) image.getLayoutParams();
+marginParams.setMargins(left, top, right, bottom);
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+***Vitamio:is library help reder video live stream from server to client
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
  ***Get view at position listview
  lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -67,6 +325,9 @@ lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Animattion 
 tv.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,android.R.anim.slide_out_right));
+1/xoay control,xoay giao diện
+2/xoay control 360 trong 3 giây,sau đó tắt phần mềm
+3/làm hiệu ứng mờ rồi sáng dần
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Handler:là 1 thread có thể cập nhật lại giao diện.Có thể kết hợp với cái Worker Thread(không thể cập nhật lại giao diện người dùng)
 protected static void startTimer() {
