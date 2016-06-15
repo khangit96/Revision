@@ -258,13 +258,16 @@ public class MainActivity extends AppCompatActivity {
 **Multiple screen:
 //layout
 small:2.0-3.7 inch
-normal:3.7-4.3 inch
+normal:3.7-4.3 inch     //width=480/(217/160) 320
+						//height=854/(217/160)
 large:4.1-7.1
 xlarge:7.0-10.1 inch
 
 dpi=mật độ điểm ảnh=sqrt(chiều roongj^2+chiều cao^2 )/số inch
 px=dp*(dpi/160)
 sw<dp>=px/(dpi/160)
+
+layout-sw320dp
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 **GridView:dùng cho hiển thị hình ảnh
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -328,6 +331,51 @@ tv.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,android.R.anim.
 1/xoay control,xoay giao diện
 2/xoay control 360 trong 3 giây,sau đó tắt phần mềm
 3/làm hiệu ứng mờ rồi sáng dần
+3/animation drawable
+
+ Animation animation = null;
+ animation = AnimationUtils.loadAnimation(this, R.anim.xoay_control);
+//xoay control,xoay giao diện
+<?xml version="1.0" encoding="utf-8"?>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="3000"
+    android:fromDegrees="0"
+    android:repeatMode="reverse"
+    android:toDegrees="360">
+</rotate>
+//xác định khi xoay xong
+  btXoay3sTatManHinh.startAnimation(animation);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        finish();
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+//làm hiệu ứng mờ rồi sáng dần(có thể dùng cho listview)
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true">
+    <alpha
+        android:duration="1000"
+        android:fromAlpha="0.0"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:toAlpha="1.0" />
+</set>
+
+//animation drawable
+
+//animator là hiệu ứng giúp cho view di chuyển theo trục x,y
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Handler:là 1 thread có thể cập nhật lại giao diện.Có thể kết hợp với cái Worker Thread(không thể cập nhật lại giao diện người dùng)
 protected static void startTimer() {
@@ -1627,9 +1675,12 @@ public class MainActivity extends AppCompatActivity implements  TimePickerDialog
 **THIẾT KẾ GIAO DIỆN ĐA MÀN HÌNH
 -Kích thước màn hình mặc định khi tạo layout là mdpi
 -để tạo giao diện khi khi nằm ngang(landscape)thì chỉ cần tạo folder layout với tên chỉ mục là layout-land(mặc định là mdpi) và phải tạo các file giống như giao diện gốc
++3.0->3.9->layout-sw200
 +4.0,4.5 inch->layout-sw320dp
 +4.6,4.7,4.8,4.9 inch->layout-sw360dp
 +5.0 inch->layout-sw400dp
++ 7.0 inch->layout-sw600dp
++10.0 inch->layout-sw720dp
 -để tạo giao diện nằm đứng chỉ cần thêm "port" vào cuối đuôi chỉ mục
 -để tạo giao diện nằm ngang chỉ cần thêm "land" vào cuối đuôi chỉ mục
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
