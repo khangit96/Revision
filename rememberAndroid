@@ -2,6 +2,10 @@
 =========================================================ANDROID=====================================================================================
 **TẠO RA 1 ĐƯỜNG THẲNG THÌ CÓ THỂ DÙNG VIEW
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+***Material Navigation Drawable
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+***DEMO JSOUP:ĐỌC MÃ NGUỒN TRANG WEB
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 **Put ArrayList<Home> over intent:
 	//activity send
   Intent intent = new Intent(MapsActivity.this, ResultActivity.class);
@@ -320,7 +324,31 @@ lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Soundpool
 --------------------------------------------------------------------------------------------------------------------------------------------------------
-***Timer
+***Timer/Timer Task
+public class MainActivity extends AppCompatActivity {
+    Timer timer = null;
+    TimerTask timerTask = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                       Log.d("timer","OK");
+                    }
+                });
+            }
+        };
+        timer=new Timer();
+        timer.schedule(timerTask,0,3000);
+    }
+}
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 ***Dữ liệu cố định thì nên đưa vào String-array in value/strings.xml
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
