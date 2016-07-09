@@ -1037,7 +1037,7 @@ ex:
 --------------------------------
 -lend:cho vay,cho mượn
 -confused:bối rối
--exceed:vượt quái
+-exceed:vượt quá
 -milestone:cột cây số,mốc quang trọng
 
 --------------------------------------------------------------------------------
@@ -1046,14 +1046,60 @@ ex:
 -alter:thay đổi,biến đổi
 -toll:thuế qua cầu
 -ferries:bến phà
--
+----------------------------------------------------------------
+-Grandparent:ông bà(nội,ngoại)
+-Board:bảng
+-sleep:ngủ
+-campfire:đốt lửa khi cắm trại
+-cottage:nhà tranh,nhà riêng ở nông thôn
+--------------------------------------------------
+-crucial:có tính quyết định,chủ yếu
+-discrepancy:sự khác nhau,trái ngược nhau
+-disturb:quấy rầy,quấy rối,làm náo động
+-liability:trách nhiệm,nghĩa vụ pháp lí
+-reflection:sự phản chiếu,phản xạ
+-subtract:trự đi,loại ra
+-tedious:chán,tẻ nhạt
+-verify:kiểm tra,xác nhận
 
-
-
-
-
-
-
-
-
+-----------------------------------------------------------------------------------------------------
+-leaves:lá
+-maple:Cây phong
+-coat:áo khoát
+-garbage:đống rác
+-rake:cái cào
+-mess:hổn độn
+-pile:cái cọc
+-wind:gió
+-laughs:cười nhạo,cười đùa
+-----------------------------------------------
+-accept:chấp nhận,thừa nhận
+-balance:cái cân,sự cân bằng
+-borrowed:mượn
+-cautiously:một cách thận trọng,cẩn thận
+-deduct:lấy đi,trừ đi
+-dividend:tiền lãi,cổ phần,số bị chia
+-down payment:phần tiền trả trước ban đầu
+-mortgage:sự cầm cố,thuế chấp
+-restricted:bị hạn chế,bị giới hạn
+-signature:chữ ký ,dấu hiệu
+----------------------------------------
+-dress:cái váy
+-ring:chiếc nhẫn
+-jewelry:trang sức
+-veil:màng che mặt,khăn trùm
+-garter:bít tất
+-penny:số tiền
+-----------------------------------
+-tradition :truyền thống
+-Participants:người tham dự
+-horrible:kinh khủng,khủng khiếp
+------------------------------------------------------------
+-factory:nhà máy
+-impact:sự va chạm,tác động
+-manufacture:sự chế tạo,sản xuất
+-industry:công nghệ,kĩ nghệ
+---------------------------------------------
+-take out:rút tiền
+-transaction:sự giao dịch,công việc kinh doanh,sự thực hiện
 
