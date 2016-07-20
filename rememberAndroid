@@ -12,6 +12,8 @@ Cho phép làm việc nhóm giống như github https://gitlab.com/
 		//support back button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+**HashMap
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
    **RecyclerView and CardView
   compile 'com.android.support:cardview-v7:21.0.+'
