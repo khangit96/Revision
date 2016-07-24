@@ -151,7 +151,7 @@ be+v-ing
 -stand(n)->kệ
 -rack->giá
 -goods->hàng hóa/products
--merchandise->hàng hóa/items
+-merchamerchandise->hàng hóa/items
 -cargo->hàng hóa đi biển/commodity->hàng hóa đi biển
 -to produce->sản xuất/produce(n)->nông sản
 -pick up:
@@ -1565,7 +1565,7 @@ ex:
 -effective:có hiệu quả,có kết quả,tác dụng
 -annually:hàng năm
 -assess:định giá,định lượng
--refer:quy cho,nói đến,ám chỉ
+-refer:quy cho,nói đến,ám chỉ,tham khảo
 -record:hồ sơ,biên bản
 -recommendation:sự giới thiệu,phó thác
 -diagnose:chẩn đoán
@@ -1611,6 +1611,100 @@ ex:
 -balloons:khí cầu
 -paper:giấy
 -casual:bình thường
+-parenthesis:dấu ngoặc đơn
+-seminar:hội nghị,chuyên đề
+-atmosphere:khí quyển
+-enhanced:nâng cao
+-Conclusion:kết luận
+-Derived :chuyển hóa,bắt nguồn từ
+--------------------------------------------------
+-ladies:phụ nữ,đàn bà
+-shirts:áo sơ mi
+-ties:dây nịch
+-nightwear:quần áo ngủ
+-underwear :đồ lót
+-perfume:nước hoa
+-shoe:
+-equipment:đồ trang bị
+-burners:người đốt
+-pot:nồi,ấm
+-pan:xoong,chảo
+-cheese:pho mát
+-toaster:lò nướng bánh
+-bread:bánh mì
+-kettle:ấm đung nước
+-boil:đun sôi
+-towels:khăn lau,khăn tấm
+-microwave:lò vi sóng
+-aware:nhận thức
+-habit:thói quen
+-evident:hiển nhiên,rõ ràng
+-illuminate:chứng mình,làm rõ,giải thích
+-distraction:sự sao nhãng,lãng phí
+-encouragement:động viên,cổ vũ,khuyến khích
+-restore :khôi phục,phục hồi
+-regularly:đều đặn,thường xuyên
+-irritate:kích thích; làm tấy lên, làm rát
+-beats:
+-roars:tiếng gầm,rống
+-neck:cổ
+-intelligently:thông minh
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+-boot:giày ống
+-devotion:hết lòng,tận tụy,tận tâm
+-afford:có thể,có đủ sức,đủ khả năng
+-afraid:sợ hãi,hoàng sợ
+-settle: ngồi, đậu, bố trí, định cư, làm ăn sinh sống; giải quyết, hòa giải, dàn xếp
+-pick up:đón ai đó
+-narrow:chật,hẹp
+-multiple:nhiều
+-impress:sự ấn tượng,khắc sâu
+-fall to: bắt đầu vào việc, bắt tay vào việc; rơi vào tay của, trở thành trách nhiệm của
+-burden:gắng nặng
+-commonly:thường,bình thường,thường thường
+-common:phổ biến
+-delivery:sự phân phát,phân phối
+-elegance :thanh lịch,tao nhã
+-flavor:mùi hương,hương vị,vị ngon
+-ingredient:thành phần hợp thành,hợp thành,thành phần
+-remind:nhắc nhở,
+-randomly :ngẫu nhiên
+-predict:nói trước,dự đoán
+-various:đa dạng,nhiều
+-mechanisms :kỹ thuật,cơ cấu,cấu tạo
+-abstractions:trừu tượng
+-summarized:tổng kết,tóm tắt
+-dispatching:gửi đi(thông điệp)
+-components:thành phần
+-manipulate:thao tác
+-keep in mind:nhớ lấy,ghi nhớ lấy
+-refer:tham khảo
+-closely :gần gũi
+-interacting:tương tác,ảnh hưởng
+-utilize:dùng,sử dụng
+-operations:thực hiện,thi hành
+-curious:ham biết,muốn tìm hiểu
+-clerk:thư ký
+-limit:giới hạn
+-pilot:phi công
+-dentist:nha sĩ
+-teeth:răng
+-lawyer:luật sư
+-hairdresser:thợ làm tóc
+-carpenter :thợ mộc
+-artistic :khéo tay,nghệ thuật
+-artist:họa sĩ
+-veterinarian:thầy thú y
+-photographer
+-captain:thuyền trưởng,thủ lĩnh
+-queen:nữ hoàng
+-season:
+-warmer:làm cho ấm
+-weather:
+-bud :nảy chồi,nảy mầm
+-bloom:nở hoa
+-ice:băng
+-
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Các cấu trúc thường dùng
 
@@ -1670,6 +1764,12 @@ Look forward to + V-ing: Mong chờ, mong đợi làm gì…
 --------------------------------------------------------------------------------------------------------------------------------
 Can you PROVIDE your bride WITH whisky from the sky?
 Provide smb with + Noun / V-ing: cung cấp cho ai cái gì
+---------------------------------------------------------------------------------------------------------------------------
+I REMEMBER WRITING a letter to the co-author in December.
+To remember doing: Nhớ đã làm gì…
+-----------------------------------------------------------------------------------------------------------------------
+Please REMEMBER TO MENTOR my club members
+To remember to do: Nhớ làm gì (chưa làm cái này )
 -----------------------------------------------------------------------------------------------------------------------------
 **Phrase verb:
 -Break down: bị hư
@@ -1689,7 +1789,32 @@ Provide smb with + Noun / V-ing: cung cấp cho ai cái gì
 -Take off: cất cánh (chủ ngữ là máy bay), trở nên thịnh hành, được ưa chuộng (chủ ngữ là ý tưởng, sản phẩm..)
 -Take st off: cởi cái gì đó
 -Wake up: (tự) thức dậy Wake s.o up: đánh thức ai dậy
-
+-Turn around: quay đầu lại
+-Speed up: tăng tốc
+-Run out of st: hết cái gì đó
+-Take up: bắt đầu làm một họat động mới (thể thao, sở thích,môn học)
+-.Warm up: khởi động
+-Get in: đi vào
+-Get off: xuống xe
+-Get up: thức dậy
+-Give up st: từ bỏ cái gì đó
+-Go on: tiếp tục
+-Go off: nổ (súng, bom), reo (chuông)
+-Go down: giảm, đi xuống
+-Go up: tăng, đi lên
+-.Grow up: lớn lên,phát triển
+-Pick sb up: đón ai đó
+-Pick st up: lượm cái gì đó lên
+-Put sb down: hạ thấp ai đó
+-Hold on: đợi tí,chờ đợi
+-Keep up st: hãy tiếp tục phát huy
+-Put out : dập tắt (lửa)
+-Look at st: nhìn cái gì đó
+-Look around: nhìn xung quanh
+-Look forward to st/Look forward to doing st: mong mỏi tới sự kiện nào đó
+-Look into st: nghiên cứu cái gì đó, xem xét cái gì đó
+-Look st up: tra nghĩa của cái từ gì đó
+-Look up to sb: kính trọng, ngưỡng mộ ai đó
 
 
 
