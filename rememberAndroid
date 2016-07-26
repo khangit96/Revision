@@ -1386,6 +1386,7 @@ v.vibrate(400);
 CTRL+ALT+L->format code;
 CTR+SHIFT+/->comment code
 ALT+ENTER tại sau giá trị text or color của view(Button,TextView..)->tạo ra một resources mà không cần vào values folder
+CTR+B:jump to declaration
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 **ScrollView only accept with one child View(LinearLayout,RelativeLayout...)
 -------------------------------------------------------------------------------------------------------------------------------------------------------
