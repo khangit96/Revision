@@ -1,0 +1,5 @@
+-sudo killall -user username:kill all process 
+-For shutdown:sudo poweroff
+-For restart:sudo reboot
+
+

@@ -1,0 +1,1 @@
+https://www.raywenderlich.com/114066/adaptive-ui-android-tutorial

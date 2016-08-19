@@ -66,3 +66,96 @@ DROP COLUMN column_name
 -Data sorting
 -Data tabulation
 -Data validation
+------------------------------------------------------------------------------------------------------------------------------------------------
+select Ma_SV From DIEM where LANTHI=1 and MA_HP='SQL' and DIEM in(6,8,10)
+
+Table:
+DIEM(MA_SV,MA_HP,DIEM,LANTHI)
+----------------------------------------------------------------------------------------------------------------------------
+SELECT TEN_HP FROM HOC_PHAN ORDER BY SOTINCHI DESC
+-------------------------------------------------------------------------------------------------------------------------
+SELECT TOP 2 MA_SV FROM DIEM WHERE MA_HP ='TINDC' ORDER BY DIEM DESC //lấy ra 2 sinh viên có điểm cao nhất và có mã học phân là TINDC
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM Student WHERE address IS NULL
+------------------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM Student WHERE address IS NOT NULL
+---------------------------------------------------------------------------------------------------------------------------------------
+SELECT TOP 2 * FROM Student
+------------------------------------------------------------------------------
+SELECT TOP 2 * FROM Student ORDER BY id DESC
+-------------------------------------------------------------------------------
+SELECT MAX(id)  FROM Student
+----------------------------------------------------------------------------
+SELECT SUM(id) FROM Student
+--------------------------------------------------------------------------------------
+SELECT name FROM Student WHERE name LIKE 'n%'
+----------------------------------------------------------------------------------------------
+SELECT name FROM Student WHERE id IN(5,7)
+--------------------------------------------------------------------------------------------------
+SELECT DISTINCT name FROM Student 
+--------------------------------------------------------------------------------------------------
+SELECT name FROM Student WHERE diem=(SELECT MAX(diem) FROM Student)
+-----------------------------------------------------------------------------------------------------------------
+SELECT SUM(diem) as TongDiem,name FROM Student GROUP BY name
+---------------------------------------------------------------------------------------------------------------------------
+SELECT COUNT(name),name FROM Student GROUP BY name
+-------------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM Customers
+WHERE Country='Germany'
+AND (City='Berlin' OR City='München')
+---------------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM Customers
+WHERE City='Berlin'
+OR City='München';  
+----------------------------------------------------------------------------------------------------------------------------------
+SQL> SELECT  ID, NAME, AMOUNT, DATE
+     FROM CUSTOMERS
+     INNER JOIN ORDERS
+     ON CUSTOMERS.ID = ORDERS.CUSTOMER_ID;
+---------------------------------------------------------------------------------------------------------------------------------
+SELECT Student.name,Diem.diem FROM Student INNER JOIN Diem ON Student.id=Diem.student_id 
+-----------------------------------------------------------------------------------------------------------------------------------
+SELECT SUM(id),name FROM Student GROUP BY name HAVING SUM(id)<5
+----------------------------------------------------------------------------------------------------------------------------------
+SELECT name FROM Student WHERE id BETWEEN 2 AND 5
+------------------------------------------------------------------------------------------------------------------------------
+SELECT name FROM Student WHERE id NOT BETWEEN 2 AND 5
+--------------------------------------------------------------------------------------------------------------------------------
+SELECT TOP 1 SUM(id) as Tong,name FROM Student GROUP BY name ORDER BY SUM(id) DESC
+-----------------------------------------------------------------------------------------------------------------------------
+SELECT COUNT(ma_ncc) FROM PhieuNhap GROUP BY ma_ncc
+------------------------------------------------------------------------------------------------------------------------------
+SELECT ma_ncc,COUNT(ma_ncc) FROM PhieuNhap GROUP BY ma_ncc
+-----------------------------------------------------------------------------------------------
+SELECT * FROM NhaCungCap WHERE ma_ncc=(SELECT TOP 1  ma_ncc FROM PhieuNhap GROUP BY ma_ncc ORDER BY COUNT(ma_ncc) DESC)
+---------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM NhaCungCap WHERE ma_ncc IN(SELECT TOP 1  ma_ncc FROM PhieuNhap GROUP BY ma_ncc ORDER BY COUNT(ma_ncc) DESC)
+-----------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM NhaCungCap WHERE ma_ncc NOT IN(SELECT ma_ncc FROM PhieuNhap)
+--------------------------------------------------------------------------------------------------
+SELECT  noi_dung,thanhtien
+ FROM PhieuNhap
+     INNER JOIN PhieuNhapCT
+     ON PhieuNhap.ma_phieu_nhap =PhieuNhapCT.ma_phieu_nhap ORDER BY thanhtien DESC;
+--------------------------------------------------------------------------------------------------------------------------------------------------
+SELECT PhieuNhap.ma_phieu_nhap,SUM(PhieuNhapCT.thanhtien) as TongSoTien
+ FROM PhieuNhap
+     INNER JOIN PhieuNhapCT
+     ON PhieuNhap.ma_phieu_nhap =PhieuNhapCT.ma_phieu_nhap GROUP BY PhieuNhap.ma_phieu_nhap HAVING SUM(thanhtien)>44554 ORDER BY SUM(thanhtien) DESC;
+	 -----------------------
+	 SELECT ma_phieu_nhap FROM PhieuNhap WHERE NOT EXISTS (SELECT * FROM PhieuNhapCT WHERE PhieuNhap.ma_phieu_nhap=PhieuNhapCT.ma_phieu_nhap) 
+	 ------------------------------------------------------------------
+	SELECT  ma_phieu_nhap,
+ noi_dung=
+ CASE noi_dung
+ WHEN 'Iphone4' THEN 'OPPO4' 
+ ELSE
+    'NOT'
+  END
+ FROM PhieuNhap
+ -------------------------------------------------
+ SELECT MaSV,Diemlan1,null as KQ FROM KetQua
+ --------------------------------------------------------------------
+ SELECT MaSV,Diemlan1,
+ CASE WHEN Diemlan1>=5 THEN 'Dat' ELSE 'Khong Dat' END as KetQua
+FROM KetQua 
